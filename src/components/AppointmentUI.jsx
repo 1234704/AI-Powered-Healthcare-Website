@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, User, Phone, CheckCircle, Activity } from 'lucide-react';
+import { Clock, User, Phone, CheckCircle, Activity, CalendarDays } from 'lucide-react';
 
 const AppointmentUI = () => {
   const [step, setStep] = useState(1);
+  const [availableDates, setAvailableDates] = useState([]);
   const [formData, setFormData] = useState({
     patientName: '',
     phone: '',
@@ -14,8 +15,33 @@ const AppointmentUI = () => {
 
   const timeSlots = ['09:00 AM', '10:30 AM', '11:00 AM', '02:00 PM', '03:30 PM', '05:00 PM'];
 
+  // Automatically generate the next 7 days when the component mounts
+  useEffect(() => {
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      dates.push({
+        fullDate: d.toISOString().split('T')[0],
+        dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        dayNumber: d.getDate(),
+        month: d.toLocaleDateString('en-US', { month: 'short' })
+      });
+    }
+    setAvailableDates(dates);
+    
+    // Auto-select the first available date by default
+    if (dates.length > 0) {
+      setFormData(prev => ({ ...prev, date: dates[0].fullDate }));
+    }
+  }, []);
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleDateSelect = (dateStr) => {
+    setFormData({ ...formData, date: dateStr, timeSlot: '' }); // Reset time slot when date changes
   };
 
   const handleSlotSelect = (slot) => {
@@ -24,7 +50,6 @@ const AppointmentUI = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Transition to Confirmation Message
     setStep(2);
   };
 
@@ -32,7 +57,7 @@ const AppointmentUI = () => {
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-3xl mx-auto">
         
-        {/* Header with Fade In Animation */}
+        {/* Header Module */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -42,7 +67,7 @@ const AppointmentUI = () => {
             <Activity size={28} />
           </div>
           <h1 className="text-3xl font-bold text-slate-900">Book an Appointment</h1>
-          <p className="mt-2 text-slate-600">Schedule your visit with our healthcare professionals.</p>
+          <p className="mt-2 text-slate-600">Select your preferred date and time for the consultation.</p>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -56,7 +81,7 @@ const AppointmentUI = () => {
             >
               <form onSubmit={handleSubmit} className="p-8">
                 
-                {/* Patient Details Form */}
+                {/* Patient Details */}
                 <div className="mb-8">
                   <h2 className="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Patient Details</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,7 +94,7 @@ const AppointmentUI = () => {
                           name="patientName"
                           required
                           onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none"
                           placeholder="John Doe"
                         />
                       </div>
@@ -83,7 +108,7 @@ const AppointmentUI = () => {
                           name="phone"
                           required
                           onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none"
                           placeholder="+1 (555) 000-0000"
                         />
                       </div>
@@ -91,26 +116,42 @@ const AppointmentUI = () => {
                   </div>
                 </div>
 
-                {/* Date Picker & Time Slots */}
+                {/* Custom Interactive Date Picker */}
                 <div className="mb-8">
-                  <h2 className="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Schedule</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Select Date</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="date" 
-                          name="date"
-                          required
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        />
-                      </div>
+                  <div className="flex items-center gap-2 mb-4 border-b pb-2">
+                    <CalendarDays className="text-slate-800" size={20} />
+                    <h2 className="text-lg font-semibold text-slate-800">Select Date & Time</h2>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-slate-700 mb-3">Available Dates</label>
+                    <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                      {availableDates.map((d) => {
+                        const isSelected = formData.date === d.fullDate;
+                        return (
+                          <motion.button
+                            type="button"
+                            key={d.fullDate}
+                            whileHover={{ y: -2 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleDateSelect(d.fullDate)}
+                            className={`flex-shrink-0 flex flex-col items-center justify-center w-[72px] h-20 rounded-xl border transition-colors duration-200 ${
+                              isSelected 
+                                ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-200' 
+                                : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
+                            }`}
+                          >
+                            <span className={`text-[11px] font-medium mb-1 ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>{d.dayName}</span>
+                            <span className="text-xl font-bold">{d.dayNumber}</span>
+                            <span className={`text-[10px] uppercase tracking-wider mt-0.5 ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>{d.month}</span>
+                          </motion.button>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  <div className="mt-6">
+                  {/* Time Slots */}
+                  <div>
                     <label className="block text-sm font-medium text-slate-700 mb-3">Available Time Slots</label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       {timeSlots.map((slot) => (
@@ -132,12 +173,12 @@ const AppointmentUI = () => {
                   </div>
                 </div>
 
-                {/* Submit Button with Hover Effects */}
+                {/* Submit Button */}
                 <motion.button
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  disabled={!formData.timeSlot}
+                  disabled={!formData.timeSlot || !formData.date}
                   className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-semibold shadow-lg shadow-blue-200 transition-colors"
                 >
                   Confirm Appointment
@@ -166,7 +207,7 @@ const AppointmentUI = () => {
               </p>
               <button 
                 onClick={() => setStep(1)}
-                className="text-blue-600 font-medium hover:text-blue-700 transition-colors underline"
+                className="text-blue-600 font-medium hover:text-blue-700 transition-colors underline outline-none"
               >
                 Book another appointment
               </button>
