@@ -17,7 +17,7 @@ const DoctorCard = ({ doc }) => {
     <motion.div 
       variants={cardVariants}
       whileHover={{ y: -6, boxShadow: "0 12px 30px -10px rgb(0 0 0 / 0.08)" }}
-      className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex flex-col justify-between relative overflow-hidden group transition-all duration-300 hover:border-slate-200/80"
+      className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex flex-col justify-between relative overflow-hidden group transition-all duration-300 hover:border-slate-200/80 h-full cursor-pointer select-none"
     >
       {/* Top Premium Accent Border on Hover */}
       <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -69,12 +69,12 @@ const DoctorCard = ({ doc }) => {
           <span className="text-xs font-bold text-amber-700">{doc.rating}</span>
         </div>
         
-        <motion.button 
-          whileTap={{ scale: 0.97 }}
-          className="flex-1 bg-slate-900 text-white py-2 px-3 rounded-xl font-semibold text-xs shadow-xs hover:bg-blue-600 transition-colors duration-200 cursor-pointer"
+        {/* Changed to div so it visualizes as a button but lets the outer motion.div handle the logic smoothly without blockages */}
+        <div 
+          className="flex-1 bg-slate-900 text-white py-2 px-3 rounded-xl font-semibold text-xs shadow-xs group-hover:bg-blue-600 transition-colors duration-200 text-center"
         >
-          View Profile
-        </motion.button>
+          Book Appointment
+        </div>
       </div>
     </motion.div>
   );

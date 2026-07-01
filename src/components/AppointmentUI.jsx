@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, User, Phone, CheckCircle, Activity } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Calendar, Clock, User, Phone, CheckCircle, Activity, X } from 'lucide-react';
 
-const AppointmentUI = () => {
+// Day 3 Integration: Added destructuring for doctor data and onClose controls
+const AppointmentUI = ({ doctor, onClose }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     patientName: '',
@@ -24,157 +25,154 @@ const AppointmentUI = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Transition to Confirmation Message
     setStep(2);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-3xl mx-auto">
-        
-        {/* Header with Fade In Animation */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-10"
+    // Backdrop Overlay Layer matching Day 3 layout specs
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 overflow-y-auto">
+      
+      {/* Click outside backdrop close trigger */}
+      <div className="absolute inset-0" onClick={onClose} />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 15 }}
+        className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 w-full max-w-lg relative z-10"
+      >
+        {/* Absolute Right Close Button Control */}
+        <button 
+          onClick={onClose} 
+          className="absolute right-5 top-5 text-slate-400 hover:text-slate-600 p-1.5 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
         >
-          <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-4 text-blue-600">
-            <Activity size={28} />
+          <X size={16} />
+        </button>
+
+        {step === 1 ? (
+          <form onSubmit={handleSubmit} className="p-6 sm:p-8">
+            
+            {/* Header Area with Doctor Injection */}
+            <div className="flex items-center gap-4 border-b border-slate-100 pb-5 mb-6">
+              <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Activity size={22} />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-slate-900 tracking-tight">Consultation Booking</h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Securing slot with <span className="font-semibold text-blue-600">{doctor?.name}</span> ({doctor?.specialization})
+                </p>
+              </div>
+            </div>
+
+            {/* Patient Details Section */}
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Patient Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <input 
+                    type="text" 
+                    name="patientName"
+                    required
+                    value={formData.patientName}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    placeholder="Enter full name"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phone Number</label>
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <input 
+                    type="tel" 
+                    name="phone"
+                    required
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    placeholder="+92 300 1234567"
+                  />
+                </div>
+              </div>
+
+              {/* Date Selection Layer */}
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Select Date</label>
+                <div className="relative">
+                  <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <input 
+                    type="date" 
+                    name="date"
+                    required
+                    value={formData.date}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Time Slot Picker Grid */}
+            <div className="mb-6">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">Available Time Slots</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {timeSlots.map((slot) => (
+                  <button
+                    type="button"
+                    key={slot}
+                    onClick={() => handleSlotSelect(slot)}
+                    className={`h-10 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
+                      formData.timeSlot === slot 
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-500/10' 
+                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Clock size={13} />
+                    {slot}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Action Lock Trigger Submit */}
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={!formData.timeSlot}
+              className="w-full h-12 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-500/10 transition-colors cursor-pointer"
+            >
+              Confirm Appointment
+            </motion.button>
+          </form>
+        ) : (
+          /* Confirmation Success Screen Overlay context */
+          <div className="p-8 text-center flex flex-col items-center">
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-4"
+            >
+              <CheckCircle size={32} className="fill-emerald-500/10" />
+            </motion.div>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">Booking Confirmed!</h2>
+            <p className="text-xs text-slate-500 mt-2 px-4 leading-relaxed">
+              Thank you, <span className="font-bold text-slate-700">{formData.patientName}</span>. Your consultation with <span className="font-bold text-slate-700">{doctor?.name}</span> has been locked for <span className="font-bold text-blue-600">{formData.date}</span> at <span className="font-bold text-blue-600">{formData.timeSlot}</span>.
+            </p>
+            
+            <button 
+              onClick={onClose}
+              className="w-full h-11 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl mt-6 transition-all cursor-pointer"
+            >
+              Done & Close Directory
+            </button>
           </div>
-          <h1 className="text-3xl font-bold text-slate-900">Book an Appointment</h1>
-          <p className="mt-2 text-slate-600">Schedule your visit with our healthcare professionals.</p>
-        </motion.div>
-
-        <AnimatePresence mode="wait">
-          {step === 1 ? (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100"
-            >
-              <form onSubmit={handleSubmit} className="p-8">
-                
-                {/* Patient Details Form */}
-                <div className="mb-8">
-                  <h2 className="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Patient Details</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="text" 
-                          name="patientName"
-                          required
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          placeholder="John Doe"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="tel" 
-                          name="phone"
-                          required
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          placeholder="+1 (555) 000-0000"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Date Picker & Time Slots */}
-                <div className="mb-8">
-                  <h2 className="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Schedule</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Select Date</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="date" 
-                          name="date"
-                          required
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6">
-                    <label className="block text-sm font-medium text-slate-700 mb-3">Available Time Slots</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {timeSlots.map((slot) => (
-                        <button
-                          type="button"
-                          key={slot}
-                          onClick={() => handleSlotSelect(slot)}
-                          className={`py-2.5 px-4 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-md ${
-                            formData.timeSlot === slot 
-                              ? 'bg-blue-600 text-white shadow-blue-200' 
-                              : 'bg-slate-50 text-slate-600 border border-slate-200 hover:border-blue-300 hover:bg-blue-50'
-                          }`}
-                        >
-                          <Clock size={16} />
-                          {slot}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Submit Button with Hover Effects */}
-                <motion.button
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  disabled={!formData.timeSlot}
-                  className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-semibold shadow-lg shadow-blue-200 transition-colors"
-                >
-                  Confirm Appointment
-                </motion.button>
-              </form>
-            </motion.div>
-          ) : (
-            /* Confirmation Message Module */
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl shadow-xl p-10 text-center border border-slate-100"
-            >
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6"
-              >
-                <CheckCircle size={40} />
-              </motion.div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">Booking Confirmed!</h2>
-              <p className="text-slate-600 mb-6">
-                Thank you, <span className="font-semibold">{formData.patientName}</span>. Your appointment is scheduled for <span className="font-semibold text-blue-600">{formData.date}</span> at <span className="font-semibold text-blue-600">{formData.timeSlot}</span>.
-              </p>
-              <button 
-                onClick={() => setStep(1)}
-                className="text-blue-600 font-medium hover:text-blue-700 transition-colors underline"
-              >
-                Book another appointment
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-      </div>
+        )}
+      </motion.div>
     </div>
   );
 };
