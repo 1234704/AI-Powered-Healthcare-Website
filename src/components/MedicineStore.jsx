@@ -15,12 +15,21 @@ const categories = ["All", "Pain Relief", "Antibiotic", "Cold & Flu", "Supplemen
 
 export default function MedicineStore() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [hoveredId, setHoveredId] = useState(null);
 
-  const filteredMedicines =
-    activeCategory === "All"
-      ? medicines
-      : medicines.filter((m) => m.category === activeCategory);
+  // Day 2: Search — matches medicine name or category as the user types
+  // Day 3: Categories — filters by the active category pill
+  // Combined: both filters apply together
+  const filteredMedicines = medicines.filter((m) => {
+    const matchesCategory = activeCategory === "All" || m.category === activeCategory;
+    const query = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      query === "" ||
+      m.name.toLowerCase().includes(query) ||
+      m.category.toLowerCase().includes(query);
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <section style={styles.section}>
@@ -43,7 +52,18 @@ export default function MedicineStore() {
             type="text"
             placeholder="Search medicines, brands, or categories..."
             style={styles.searchInput}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
+          {searchQuery && (
+            <button
+              style={styles.clearBtn}
+              onClick={() => setSearchQuery("")}
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
         {/* Category filters */}
@@ -61,6 +81,11 @@ export default function MedicineStore() {
             </button>
           ))}
         </div>
+
+        {/* Result count */}
+        <p style={styles.resultCount}>
+          {filteredMedicines.length} medicine{filteredMedicines.length === 1 ? "" : "s"} found
+        </p>
 
         {/* Medicine Grid */}
         <div style={styles.grid}>
@@ -101,7 +126,9 @@ export default function MedicineStore() {
         </div>
 
         {filteredMedicines.length === 0 && (
-          <p style={styles.emptyText}>No medicines found in this category.</p>
+          <p style={styles.emptyText}>
+            No medicines found{searchQuery ? ` for "${searchQuery}"` : ""}{activeCategory !== "All" ? ` in ${activeCategory}` : ""}.
+          </p>
         )}
       </div>
     </section>
@@ -165,12 +192,26 @@ const styles = {
     fontSize: "1rem",
     color: "#2D3748",
   },
+  clearBtn: {
+    border: "none",
+    background: "#EDF2F7",
+    color: "#4A5568",
+    width: "24px",
+    height: "24px",
+    borderRadius: "50%",
+    cursor: "pointer",
+    fontSize: "0.75rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
   categoryRow: {
     display: "flex",
     gap: "10px",
     flexWrap: "wrap",
     justifyContent: "center",
-    marginBottom: "40px",
+    marginBottom: "20px",
   },
   categoryBtn: {
     background: "white",
@@ -187,6 +228,13 @@ const styles = {
     background: "#0D9488",
     borderColor: "#0D9488",
     color: "white",
+  },
+  resultCount: {
+    textAlign: "center",
+    color: "#A0AEC0",
+    fontSize: "0.85rem",
+    fontWeight: "600",
+    marginBottom: "24px",
   },
   grid: {
     display: "grid",
