@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, User, Phone, CheckCircle, Activity, CalendarDays } from 'lucide-react';
+import { Clock, User, Phone, CheckCircle, Activity, CalendarDays, Sun, CloudSun, Moon } from 'lucide-react';
 
 const AppointmentUI = () => {
   const [step, setStep] = useState(1);
@@ -13,9 +13,39 @@ const AppointmentUI = () => {
     reason: ''
   });
 
-  const timeSlots = ['09:00 AM', '10:30 AM', '11:00 AM', '02:00 PM', '03:30 PM', '05:00 PM'];
+  // Categorized time slots with simulated availability status
+  const timeSlotCategories = [
+    {
+      period: 'Morning',
+      icon: <Sun size={16} className="text-amber-500" />,
+      slots: [
+        { time: '09:00 AM', available: true },
+        { time: '09:30 AM', available: false },
+        { time: '10:00 AM', available: true },
+        { time: '11:30 AM', available: true },
+      ]
+    },
+    {
+      period: 'Afternoon',
+      icon: <CloudSun size={16} className="text-orange-500" />,
+      slots: [
+        { time: '01:00 PM', available: false },
+        { time: '02:00 PM', available: true },
+        { time: '03:30 PM', available: true },
+        { time: '04:15 PM', available: false },
+      ]
+    },
+    {
+      period: 'Evening',
+      icon: <Moon size={16} className="text-indigo-500" />,
+      slots: [
+        { time: '05:00 PM', available: true },
+        { time: '06:00 PM', available: true },
+        { time: '07:30 PM', available: false },
+      ]
+    }
+  ];
 
-  // Automatically generate the next 7 days when the component mounts
   useEffect(() => {
     const dates = [];
     for (let i = 0; i < 7; i++) {
@@ -30,7 +60,6 @@ const AppointmentUI = () => {
     }
     setAvailableDates(dates);
     
-    // Auto-select the first available date by default
     if (dates.length > 0) {
       setFormData(prev => ({ ...prev, date: dates[0].fullDate }));
     }
@@ -41,11 +70,11 @@ const AppointmentUI = () => {
   };
 
   const handleDateSelect = (dateStr) => {
-    setFormData({ ...formData, date: dateStr, timeSlot: '' }); // Reset time slot when date changes
+    setFormData({ ...formData, date: dateStr, timeSlot: '' }); 
   };
 
-  const handleSlotSelect = (slot) => {
-    setFormData({ ...formData, timeSlot: slot });
+  const handleSlotSelect = (slotTime) => {
+    setFormData({ ...formData, timeSlot: slotTime });
   };
 
   const handleSubmit = (e) => {
@@ -123,8 +152,7 @@ const AppointmentUI = () => {
                     <h2 className="text-lg font-semibold text-slate-800">Select Date & Time</h2>
                   </div>
                   
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-slate-700 mb-3">Available Dates</label>
+                  <div className="mb-8">
                     <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                       {availableDates.map((d) => {
                         const isSelected = formData.date === d.fullDate;
@@ -150,26 +178,39 @@ const AppointmentUI = () => {
                     </div>
                   </div>
 
-                  {/* Time Slots */}
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-3">Available Time Slots</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {timeSlots.map((slot) => (
-                        <button
-                          type="button"
-                          key={slot}
-                          onClick={() => handleSlotSelect(slot)}
-                          className={`py-2.5 px-4 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-md ${
-                            formData.timeSlot === slot 
-                              ? 'bg-blue-600 text-white shadow-blue-200' 
-                              : 'bg-slate-50 text-slate-600 border border-slate-200 hover:border-blue-300 hover:bg-blue-50'
-                          }`}
-                        >
-                          <Clock size={16} />
-                          {slot}
-                        </button>
-                      ))}
-                    </div>
+                  {/* Advanced Categorized Time Slots */}
+                  <div className="space-y-6">
+                    {timeSlotCategories.map((category, idx) => (
+                      <div key={idx}>
+                        <div className="flex items-center gap-2 mb-3">
+                          {category.icon}
+                          <h3 className="text-sm font-semibold text-slate-700">{category.period}</h3>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          {category.slots.map((slot, sIdx) => {
+                            const isSelected = formData.timeSlot === slot.time;
+                            return (
+                              <button
+                                type="button"
+                                key={sIdx}
+                                disabled={!slot.available}
+                                onClick={() => handleSlotSelect(slot.time)}
+                                className={`py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-200 ${
+                                  !slot.available 
+                                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-100'
+                                    : isSelected 
+                                      ? 'bg-blue-600 text-white shadow-md shadow-blue-200 border border-blue-600' 
+                                      : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm'
+                                }`}
+                              >
+                                <Clock size={14} className={!slot.available ? 'opacity-50' : ''} />
+                                {slot.time}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -179,7 +220,7 @@ const AppointmentUI = () => {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={!formData.timeSlot || !formData.date}
-                  className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-semibold shadow-lg shadow-blue-200 transition-colors"
+                  className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-semibold shadow-lg shadow-blue-200 transition-colors mt-8"
                 >
                   Confirm Appointment
                 </motion.button>
