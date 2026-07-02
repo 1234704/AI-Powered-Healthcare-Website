@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, User, Phone, CheckCircle, Activity, CalendarDays, Sun, CloudSun, Moon } from 'lucide-react';
+import { Clock, User, Phone, CheckCircle, Activity, CalendarDays, Sun, CloudSun, Moon, FileText, ClipboardList } from 'lucide-react';
 
 const AppointmentUI = () => {
   const [step, setStep] = useState(1);
   const [availableDates, setAvailableDates] = useState([]);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     patientName: '',
     phone: '',
+    dob: '',
+    gender: '',
+    reason: '',
     date: '',
-    timeSlot: '',
-    reason: ''
+    timeSlot: ''
   });
 
-  // Categorized time slots with simulated availability status
   const timeSlotCategories = [
     {
       period: 'Morning',
@@ -65,8 +67,45 @@ const AppointmentUI = () => {
     }
   }, []);
 
+  // Comprehensive Frontend Form Validation Engine
+  const validateForm = () => {
+    const tempErrors = {};
+    
+    // Check for realistic name bounds
+    if (formData.patientName.trim().length < 3) {
+      tempErrors.patientName = "Full name must be at least 3 characters long.";
+    }
+    
+    // Regular Expression validation for international standard phone links
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(formData.phone.replace(/[\s()-]/g, ''))) {
+      tempErrors.phone = "Please enter a valid phone number (e.g., +15550000000).";
+    }
+
+    // Ensure the patient is not setting a birth date in the future
+    if (new Date(formData.dob) > new Date()) {
+      tempErrors.dob = "Date of birth cannot be a future date.";
+    }
+
+    if (!formData.gender) {
+      tempErrors.gender = "Please select your gender.";
+    }
+
+    if (formData.reason.trim().length < 10) {
+      tempErrors.reason = "Please describe your symptoms briefly (minimum 10 characters).";
+    }
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    // Clear targeted inputs errors dynamically as the user modifies content
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
+    }
   };
 
   const handleDateSelect = (dateStr) => {
@@ -79,7 +118,9 @@ const AppointmentUI = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStep(2);
+    if (validateForm()) {
+      setStep(2);
+    }
   };
 
   return (
@@ -96,7 +137,7 @@ const AppointmentUI = () => {
             <Activity size={28} />
           </div>
           <h1 className="text-3xl font-bold text-slate-900">Book an Appointment</h1>
-          <p className="mt-2 text-slate-600">Select your preferred date and time for the consultation.</p>
+          <p className="mt-2 text-slate-600">Please provide patient details and schedule preferences.</p>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -110,9 +151,13 @@ const AppointmentUI = () => {
             >
               <form onSubmit={handleSubmit} className="p-8">
                 
-                {/* Patient Details */}
+                {/* Upgraded Day 4 Patient Details Form Section */}
                 <div className="mb-8">
-                  <h2 className="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Patient Details</h2>
+                  <div className="flex items-center gap-2 mb-4 border-b pb-2">
+                    <ClipboardList className="text-slate-800" size={20} />
+                    <h2 className="text-lg font-semibold text-slate-800">Patient Intake Form</h2>
+                  </div>
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
@@ -121,13 +166,16 @@ const AppointmentUI = () => {
                         <input 
                           type="text" 
                           name="patientName"
+                          value={formData.patientName}
                           required
                           onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none"
+                          className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.patientName ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
                           placeholder="John Doe"
                         />
                       </div>
+                      {errors.patientName && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.patientName}</p>}
                     </div>
+
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
                       <div className="relative">
@@ -135,13 +183,63 @@ const AppointmentUI = () => {
                         <input 
                           type="tel" 
                           name="phone"
+                          value={formData.phone}
                           required
                           onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none"
+                          className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.phone ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
                           placeholder="+1 (555) 000-0000"
                         />
                       </div>
+                      {errors.phone && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.phone}</p>}
                     </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Date of Birth</label>
+                      <input 
+                        type="date" 
+                        name="dob"
+                        value={formData.dob}
+                        required
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.dob ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
+                      />
+                      {errors.dob && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.dob}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Gender Identity</label>
+                      <select 
+                        name="gender"
+                        value={formData.gender}
+                        required
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.gender ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Non-binary">Non-binary</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                      </select>
+                      {errors.gender && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.gender}</p>}
+                    </div>
+                  </div>
+
+                  <div className="mt-6">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Reason for Visit / Main Symptoms</label>
+                    <div className="relative">
+                      <FileText className="absolute left-3 top-3 text-slate-400" size={18} />
+                      <textarea 
+                        name="reason"
+                        rows="3"
+                        value={formData.reason}
+                        required
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.reason ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
+                        placeholder="Please describe what symptoms you are experiencing (e.g., persistent fever, headache for 2 days)..."
+                      ></textarea>
+                    </div>
+                    {errors.reason && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.reason}</p>}
                   </div>
                 </div>
 
