@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, User, Phone, CheckCircle, Activity, X } from 'lucide-react';
 
-// Day 3 Integration: Added destructuring for doctor data and onClose controls
 const AppointmentUI = ({ doctor, onClose }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -29,9 +28,13 @@ const AppointmentUI = ({ doctor, onClose }) => {
   };
 
   return (
-    // Backdrop Overlay Layer matching Day 3 layout specs
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 overflow-y-auto">
-      
+    /* Day 4 Fix: Static wrapper to motion.div for fluid backdrop fade exit */
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 overflow-y-auto"
+    >
       {/* Click outside backdrop close trigger */}
       <div className="absolute inset-0" onClick={onClose} />
 
@@ -39,12 +42,13 @@ const AppointmentUI = ({ doctor, onClose }) => {
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 w-full max-w-lg relative z-10"
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 w-full max-w-lg relative z-10 my-auto"
       >
         {/* Absolute Right Close Button Control */}
         <button 
           onClick={onClose} 
-          className="absolute right-5 top-5 text-slate-400 hover:text-slate-600 p-1.5 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
+          className="absolute right-5 top-5 text-slate-400 hover:text-slate-600 p-1.5 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all cursor-pointer z-20"
         >
           <X size={16} />
         </button>
@@ -57,10 +61,10 @@ const AppointmentUI = ({ doctor, onClose }) => {
               <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Activity size={22} />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <h2 className="text-base font-bold text-slate-900 tracking-tight">Consultation Booking</h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Securing slot with <span className="font-semibold text-blue-600">{doctor?.name}</span> ({doctor?.specialization})
+                <p className="text-xs text-slate-500 mt-0.5 truncate">
+                  Securing slot with <span className="font-semibold text-blue-600">{doctor?.name}</span>
                 </p>
               </div>
             </div>
@@ -77,7 +81,7 @@ const AppointmentUI = ({ doctor, onClose }) => {
                     required
                     value={formData.patientName}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400"
                     placeholder="Enter full name"
                   />
                 </div>
@@ -93,7 +97,7 @@ const AppointmentUI = ({ doctor, onClose }) => {
                     required
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400"
                     placeholder="+92 300 1234567"
                   />
                 </div>
@@ -110,7 +114,7 @@ const AppointmentUI = ({ doctor, onClose }) => {
                     required
                     value={formData.date}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-slate-600"
                   />
                 </div>
               </div>
@@ -127,8 +131,8 @@ const AppointmentUI = ({ doctor, onClose }) => {
                     onClick={() => handleSlotSelect(slot)}
                     className={`h-10 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
                       formData.timeSlot === slot 
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-500/10' 
-                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-100'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs' 
+                        : 'bg-slate-50 text-slate-600 border-slate-200/80 hover:border-slate-300 hover:bg-slate-100'
                     }`}
                   >
                     <Clock size={13} />
@@ -173,7 +177,7 @@ const AppointmentUI = ({ doctor, onClose }) => {
           </div>
         )}
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Users, ShieldCheck, Clock, Bell, User, ChevronDown } from 'lucide-react';
 import DoctorCard from './components/DoctorCard';
-import AppointmentUI from './components/AppointmentUI'; // Day 3 Appointment Integration
+import AppointmentUI from './components/AppointmentUI'; 
 
 const mockDoctors = [
   {
@@ -129,6 +129,17 @@ const mockDoctors = [
 
 const categories = ["All", "Cardiologist", "Dermatologist", "Pediatrician", "Neurologist", "Gynecologist", "Orthopedic Surgeon", "Ophthalmologist", "Psychiatrist", "General Surgeon", "Oncologist", "ENT Specialist", "Endocrinologist"];
 
+// Master Grid Parent Animation Configuration
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.07 // Visual cascade thoda clear dikhane ke liye delay adjust kiya hai
+    }
+  }
+};
+
 const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -151,7 +162,7 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] font-sans antialiased selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#f8fafc] font-sans antialiased selection:bg-blue-600 selection:text-white overflow-x-hidden">
       
       {/* Premium Top Navigation Bar */}
       <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between shadow-xs">
@@ -258,14 +269,19 @@ const App = () => {
                       key={cat}
                       type="button"
                       onClick={() => setSelectedCategory(cat)}
-                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
+                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer relative overflow-hidden ${
                         selectedCategory === cat
                           ? 'bg-blue-600 text-white shadow-sm'
                           : 'bg-transparent text-slate-600 hover:bg-slate-50'
                       }`}
                     >
-                      <span>{cat}</span>
-                      {selectedCategory === cat && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
+                      <span className="relative z-10">{cat}</span>
+                      {selectedCategory === cat && (
+                        <motion.span 
+                          layoutId="activeIndicator"
+                          className="w-1.5 h-1.5 bg-white rounded-full relative z-10" 
+                        />
+                      )}
                     </button>
                   ))}
                 </div>
@@ -273,36 +289,47 @@ const App = () => {
             </div>
           </aside>
 
-          {/* Main Content Area - Stable Grid View without layout collision */}
-          <main className="flex-1 w-full min-w-0">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 items-stretch">
-              <AnimatePresence mode="wait">
+          {/* Main Content Area - 3D Perspective Grid */}
+          <main className="flex-1 w-full min-w-0" style={{ perspective: "1200px" }}>
+            <motion.div 
+              layout
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 items-stretch auto-rows-fr"
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              <AnimatePresence mode="popLayout" initial={false}>
                 {filteredDoctors.map((doctor) => (
-                  <motion.div
+                  <div
                     key={doctor.id}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.12 } }}
                     onClick={() => setSelectedDoctor(doctor)}
                     className="h-full"
                   >
                     <DoctorCard doc={doctor} />
-                  </motion.div>
+                  </div>
                 ))}
               </AnimatePresence>
-            </div>
+            </motion.div>
 
             {/* Edge-Case Empty Viewport */}
-            {filteredDoctors.length === 0 && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-64 bg-white rounded-2xl border border-dashed border-slate-200 flex flex-col items-center justify-center text-center p-6">
-                <Search size={28} className="text-slate-300 mb-2" />
-                <h3 className="text-sm font-bold text-slate-800">No Specialists Found</h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-xs">We couldn't match any consultants with your search payload query.</p>
-                <button onClick={resetFilters} className="mt-4 text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-all shadow-sm cursor-pointer">
-                  Clear Search Filter
-                </button>
-              </motion.div>
-            )}
+            <AnimatePresence>
+              {filteredDoctors.length === 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }} 
+                  animate={{ opacity: 1, scale: 1 }} 
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="h-64 bg-white rounded-2xl border border-dashed border-slate-200 flex flex-col items-center justify-center text-center p-6 mt-2"
+                >
+                  <Search size={28} className="text-slate-300 mb-2" />
+                  <h3 className="text-sm font-bold text-slate-800">No Specialists Found</h3>
+                  <p className="text-xs text-slate-400 mt-1 max-w-xs">We couldn't match any consultants with your search payload query.</p>
+                  <button onClick={resetFilters} className="mt-4 text-xs font-bold bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-all shadow-sm cursor-pointer">
+                    Clear Search Filter
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </main>
 
         </div>

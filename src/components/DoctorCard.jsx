@@ -2,13 +2,30 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Star, Briefcase, GraduationCap, MapPin, CheckCircle } from 'lucide-react';
 
-// Framer Motion variant for single card animation matching the cascade transition
+// Energetic 3D Flip & Perspective Entrance
 const cardVariants = {
-  hidden: { opacity: 0, y: 25 },
+  hidden: { 
+    opacity: 0, 
+    y: 40, 
+    rotateX: 12,  // Card halka sa piche ki taraf tilt hoga
+    scale: 0.92 
+  },
   show: { 
     opacity: 1, 
     y: 0, 
-    transition: { type: "spring", stiffness: 110, damping: 16 } 
+    rotateX: 0, 
+    scale: 1,
+    transition: { 
+      type: "spring", 
+      stiffness: 120, 
+      damping: 14 // Energetic or smooth bounce effect
+    } 
+  },
+  exit: { 
+    opacity: 0, 
+    scale: 0.9, 
+    y: 20,
+    transition: { duration: 0.2 } 
   }
 };
 
@@ -16,22 +33,30 @@ const DoctorCard = ({ doc }) => {
   return (
     <motion.div 
       variants={cardVariants}
-      whileHover={{ y: -6, boxShadow: "0 12px 30px -10px rgb(0 0 0 / 0.08)" }}
-      className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex flex-col justify-between relative overflow-hidden group transition-all duration-300 hover:border-slate-200/80 h-full cursor-pointer select-none"
+      whileHover={{ 
+        y: -10, 
+        scale: 1.02,
+        boxShadow: "0 20px 40px -15px rgba(59, 130, 246, 0.15)" // Neon glow shadow on hover
+      }}
+      whileTap={{ scale: 0.98 }}
+      className="bg-white p-5 rounded-2xl border border-slate-100 shadow-xs flex flex-col justify-between relative overflow-hidden group transition-all duration-300 hover:border-blue-200 h-full cursor-pointer select-none"
     >
-      {/* Top Premium Accent Border on Hover */}
-      <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      {/* Premium Glow Accent Border on Hover */}
+      <div className="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       <div>
-        {/* Card Header: Avatar & Specialty Metadata */}
+        {/* Card Header: Avatar & Specialty */}
         <div className="flex items-start gap-4">
-          <div className="relative overflow-hidden rounded-xl w-14 h-14 flex-shrink-0 border border-slate-100 bg-slate-50">
+          <motion.div 
+            whileHover={{ rotate: 5, scale: 1.05 }}
+            className="relative overflow-hidden rounded-xl w-14 h-14 flex-shrink-0 border border-slate-100 bg-slate-50 shadow-inner"
+          >
             <img 
               src={doc.image} 
               alt={doc.name} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
+              className="w-full h-full object-cover"
             />
-          </div>
+          </motion.div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <h3 className="font-bold text-slate-800 text-sm tracking-tight truncate group-hover:text-blue-600 transition-colors duration-200">
@@ -45,7 +70,7 @@ const DoctorCard = ({ doc }) => {
           </div>
         </div>
 
-        {/* Core Practitioner Bio Section */}
+        {/* Bio Section */}
         <div className="mt-5 pt-4 border-t border-slate-100/80 space-y-2.5 text-xs text-slate-600">
           <div className="flex items-center gap-2">
             <GraduationCap size={15} className="text-slate-400 flex-shrink-0" />
@@ -62,19 +87,20 @@ const DoctorCard = ({ doc }) => {
         </div>
       </div>
 
-      {/* Card Footer: Live System Rating & Action Trigger */}
+      {/* Card Footer */}
       <div className="mt-5 pt-3 border-t border-slate-100/60 flex items-center justify-between gap-3">
         <div className="flex items-center gap-1 bg-amber-50/80 px-2 py-1 rounded-lg border border-amber-100/50">
           <Star size={13} className="fill-amber-400 text-amber-400" />
           <span className="text-xs font-bold text-amber-700">{doc.rating}</span>
         </div>
         
-        {/* Changed to div so it visualizes as a button but lets the outer motion.div handle the logic smoothly without blockages */}
-        <div 
-          className="flex-1 bg-slate-900 text-white py-2 px-3 rounded-xl font-semibold text-xs shadow-xs group-hover:bg-blue-600 transition-colors duration-200 text-center"
+        <motion.div 
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          className="flex-1 bg-slate-900 text-white py-2 px-3 rounded-xl font-semibold text-xs shadow-md group-hover:bg-blue-600 group-hover:shadow-blue-500/20 transition-all duration-200 text-center"
         >
           Book Appointment
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
