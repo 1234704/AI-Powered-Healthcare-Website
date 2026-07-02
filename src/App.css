@@ -182,3 +182,210 @@
     border-right-color: var(--border);
   }
 }
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+section {
+  animation: fadeIn 1s ease-in-out;
+}
+/* ===== Global Styles ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== Responsive Images ===== */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== Container ===== */
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* ===== Media Queries ===== */
+
+/* ✅ Tablets and smaller (max-width: 1024px) */
+@media (max-width: 1024px) {
+  /* Hero Section */
+  .hero-section {
+    flex-direction: column !important;
+    padding: 40px 30px !important;
+    text-align: center;
+  }
+  
+  .hero-section h1 {
+    font-size: 36px !important;
+  }
+  
+  .hero-section .hero-text {
+    padding-right: 0 !important;
+  }
+  
+  /* Featured Doctors - 2 columns */
+  .doctors-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+  
+  /* Services - 2 columns */
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  /* Statistics - 2 columns */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    padding: 50px 30px !important;
+  }
+  
+  .cta-section h2 {
+    font-size: 32px !important;
+  }
+}
+
+/* ✅ Mobile phones (max-width: 768px) */
+@media (max-width: 768px) {
+  /* General */
+  section {
+    padding: 40px 20px !important;
+  }
+  
+  h2 {
+    font-size: 28px !important;
+  }
+  
+  /* Hero Section */
+  .hero-section {
+    padding: 30px 20px !important;
+    min-height: auto !important;
+  }
+  
+  .hero-section h1 {
+    font-size: 28px !important;
+  }
+  
+  .hero-section p {
+    font-size: 16px !important;
+  }
+  
+  .hero-section button {
+    padding: 12px 30px !important;
+    font-size: 16px !important;
+  }
+  
+  /* Featured Doctors - 1 column */
+  .doctors-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 350px !important;
+    margin: 0 auto !important;
+  }
+  
+  /* Services - 1 column */
+  .services-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 350px !important;
+    margin: 0 auto !important;
+  }
+  
+  /* Statistics - 2 columns (small) */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+  }
+  
+  .stats-grid .stat-item {
+    padding: 15px !important;
+  }
+  
+  .stats-grid .stat-number {
+    font-size: 28px !important;
+  }
+  
+  .stats-grid .stat-label {
+    font-size: 12px !important;
+  }
+  
+  /* Testimonials */
+  .testimonials-section {
+    padding: 40px 20px !important;
+  }
+  
+  .testimonial-card {
+    padding: 25px !important;
+    min-height: auto !important;
+  }
+  
+  .testimonial-card p {
+    font-size: 14px !important;
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    padding: 40px 20px !important;
+  }
+  
+  .cta-section h2 {
+    font-size: 26px !important;
+  }
+  
+  .cta-section p {
+    font-size: 16px !important;
+  }
+  
+  .cta-buttons {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  
+  .cta-buttons button {
+    width: 100% !important;
+    max-width: 280px !important;
+    padding: 12px 30px !important;
+    font-size: 16px !important;
+  }
+}
+
+/* ✅ Very small phones (max-width: 480px) */
+@media (max-width: 480px) {
+  .hero-section h1 {
+    font-size: 24px !important;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  
+  .stats-grid .stat-number {
+    font-size: 24px !important;
+  }
+  
+  .testimonial-card {
+    padding: 20px !important;
+  }
+}
