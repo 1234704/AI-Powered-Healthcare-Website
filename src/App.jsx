@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Users, ShieldCheck, Clock, Bell, User, ChevronDown } from 'lucide-react';
 import DoctorCard from './components/DoctorCard';
 import AppointmentUI from './components/AppointmentUI'; 
+import DoctorDetailsModal from './components/DoctorDetailsModal'; // Day 5 Integration
 
 const mockDoctors = [
   {
@@ -13,7 +14,9 @@ const mockDoctors = [
     experience: "10 Years",
     rating: "4.9",
     location: "Core HQ - Central Clinic",
-    image: "https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Mon", "Wed", "Fri"],
+    availableTime: "05:00 PM - 08:00 PM"
   },
   {
     id: 2,
@@ -23,7 +26,9 @@ const mockDoctors = [
     experience: "8 Years",
     rating: "4.8",
     location: "Branch Office A - Skin Care",
-    image: "https://images.pexels.com/photos/4173251/pexels-photo-4173251.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/4173251/pexels-photo-4173251.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Tue", "Thu", "Sat"],
+    availableTime: "11:00 AM - 02:00 PM"
   },
   {
     id: 3,
@@ -33,7 +38,9 @@ const mockDoctors = [
     experience: "12 Years",
     rating: "5.0",
     location: "Branch Office B - Kids Care",
-    image: "https://images.pexels.com/photos/4173239/pexels-photo-4173239.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/4173239/pexels-photo-4173239.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Mon", "Tue", "Thu", "Fri"],
+    availableTime: "04:00 PM - 07:00 PM"
   },
   {
     id: 4,
@@ -43,7 +50,9 @@ const mockDoctors = [
     experience: "15 Years",
     rating: "4.7",
     location: "Core HQ - Neuro Dept",
-    image: "https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Wed", "Thu"],
+    availableTime: "06:00 PM - 09:00 PM"
   },
   {
     id: 5,
@@ -53,7 +62,9 @@ const mockDoctors = [
     experience: "9 Years",
     rating: "4.9",
     location: "Data Center Allied Hospital",
-    image: "https://images.pexels.com/photos/7578803/pexels-photo-7578803.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/7578803/pexels-photo-7578803.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Mon", "Wed", "Sat"],
+    availableTime: "10:00 AM - 01:00 PM"
   },
   {
     id: 6,
@@ -63,7 +74,9 @@ const mockDoctors = [
     experience: "11 Years",
     rating: "4.6",
     location: "Branch Office A - Ortho",
-    image: "https://images.pexels.com/photos/8460093/pexels-photo-8460093.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/8460093/pexels-photo-8460093.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Tue", "Fri"],
+    availableTime: "03:00 PM - 06:00 PM"
   },
   {
     id: 7,
@@ -73,7 +86,9 @@ const mockDoctors = [
     experience: "14 Years",
     rating: "4.8",
     location: "Core HQ - Eye Care Wing",
-    image: "https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Mon", "Thu"],
+    availableTime: "02:00 PM - 05:00 PM"
   },
   {
     id: 8,
@@ -83,7 +98,9 @@ const mockDoctors = [
     experience: "7 Years",
     rating: "4.9",
     location: "Branch Office B - Mental Health",
-    image: "https://images.pexels.com/photos/7108388/pexels-photo-7108388.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/7108388/pexels-photo-7108388.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Tue", "Wed", "Fri"],
+    availableTime: "05:00 PM - 08:00 PM"
   },
   {
     id: 9,
@@ -93,7 +110,9 @@ const mockDoctors = [
     experience: "20 Years",
     rating: "5.0",
     location: "Core HQ - Main OT",
-    image: "https://images.pexels.com/photos/6140660/pexels-photo-6140660.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/6140660/pexels-photo-6140660.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Mon", "Fri"],
+    availableTime: "09:00 AM - 12:00 PM"
   },
   {
     id: 10,
@@ -103,7 +122,9 @@ const mockDoctors = [
     experience: "13 Years",
     rating: "4.7",
     location: "Data Center Oncology Lab",
-    image: "https://images.pexels.com/photos/8442283/pexels-photo-8442283.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/8442283/pexels-photo-8442283.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Wed", "Sat"],
+    availableTime: "11:00 AM - 02:00 PM"
   },
   {
     id: 11,
@@ -113,7 +134,9 @@ const mockDoctors = [
     experience: "10 Years",
     rating: "4.5",
     location: "Branch Office A - ENT Clinic",
-    image: "https://images.pexels.com/photos/8413401/pexels-photo-8413401.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/8413401/pexels-photo-8413401.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Tue", "Thu"],
+    availableTime: "04:00 PM - 07:00 PM"
   },
   {
     id: 12,
@@ -123,19 +146,20 @@ const mockDoctors = [
     experience: "6 Years",
     rating: "4.6",
     location: "Branch Office B - Diabetes Care",
-    image: "https://images.pexels.com/photos/7659564/pexels-photo-7659564.jpeg?auto=compress&cs=tinysrgb&w=300"
+    image: "https://images.pexels.com/photos/7659564/pexels-photo-7659564.jpeg?auto=compress&cs=tinysrgb&w=300",
+    availableDays: ["Mon", "Tue", "Wed"],
+    availableTime: "01:00 PM - 04:00 PM"
   }
 ];
 
 const categories = ["All", "Cardiologist", "Dermatologist", "Pediatrician", "Neurologist", "Gynecologist", "Orthopedic Surgeon", "Ophthalmologist", "Psychiatrist", "General Surgeon", "Oncologist", "ENT Specialist", "Endocrinologist"];
 
-// Master Grid Parent Animation Configuration
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.07 // Visual cascade thoda clear dikhane ke liye delay adjust kiya hai
+      staggerChildren: 0.07 
     }
   }
 };
@@ -144,6 +168,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedDoctor, setSelectedDoctor] = useState(null); 
+  const [isBookingOpen, setIsBookingOpen] = useState(false); // Day 5: Multi-layer workflow lock
 
   const filteredDoctors = mockDoctors.filter((doctor) => {
     const matchesSearch = 
@@ -303,8 +328,11 @@ const App = () => {
                 {filteredDoctors.map((doctor) => (
                   <div
                     key={doctor.id}
-                    onClick={() => setSelectedDoctor(doctor)}
-                    className="h-full"
+                    onClick={() => {
+                      setSelectedDoctor(doctor);
+                      setIsBookingOpen(false); // Modal hierarchy reset karein
+                    }}
+                    className="h-full cursor-pointer"
                   >
                     <DoctorCard doc={doctor} />
                   </div>
@@ -335,10 +363,27 @@ const App = () => {
         </div>
       </div>
 
-      {/* Appointment Popup Drawer Layer */}
+      {/* Layer 1: Doctor Details Modal Integration */}
       <AnimatePresence>
-        {selectedDoctor && (
-          <AppointmentUI doctor={selectedDoctor} onClose={() => setSelectedDoctor(null)} />
+        {selectedDoctor && !isBookingOpen && (
+          <DoctorDetailsModal 
+            doctor={selectedDoctor} 
+            onClose={() => setSelectedDoctor(null)} 
+            onBookAppointment={() => setIsBookingOpen(true)} 
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Layer 2: Appointment Form Drawer Layer */}
+      <AnimatePresence>
+        {selectedDoctor && isBookingOpen && (
+          <AppointmentUI 
+            doctor={selectedDoctor} 
+            onClose={() => {
+              setIsBookingOpen(false);
+              setSelectedDoctor(null);
+            }} 
+          />
         )}
       </AnimatePresence>
     </div>
