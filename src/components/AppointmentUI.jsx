@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, User, Phone, CheckCircle, Activity, CalendarDays, Sun, CloudSun, Moon, FileText, ClipboardList } from 'lucide-react';
+import { Clock, User, Phone, CheckCircle, Activity, CalendarDays, Sun, CloudSun, Moon, FileText, ClipboardList, CalendarPlus, ArrowLeft } from 'lucide-react';
 
 const AppointmentUI = () => {
   const [step, setStep] = useState(1);
@@ -57,7 +57,8 @@ const AppointmentUI = () => {
         fullDate: d.toISOString().split('T')[0],
         dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
         dayNumber: d.getDate(),
-        month: d.toLocaleDateString('en-US', { month: 'short' })
+        month: d.toLocaleDateString('en-US', { month: 'short' }),
+        fullDisplay: d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
       });
     }
     setAvailableDates(dates);
@@ -67,33 +68,14 @@ const AppointmentUI = () => {
     }
   }, []);
 
-  // Comprehensive Frontend Form Validation Engine
   const validateForm = () => {
     const tempErrors = {};
-    
-    // Check for realistic name bounds
-    if (formData.patientName.trim().length < 3) {
-      tempErrors.patientName = "Full name must be at least 3 characters long.";
-    }
-    
-    // Regular Expression validation for international standard phone links
+    if (formData.patientName.trim().length < 3) tempErrors.patientName = "Full name must be at least 3 characters long.";
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-    if (!phoneRegex.test(formData.phone.replace(/[\s()-]/g, ''))) {
-      tempErrors.phone = "Please enter a valid phone number (e.g., +15550000000).";
-    }
-
-    // Ensure the patient is not setting a birth date in the future
-    if (new Date(formData.dob) > new Date()) {
-      tempErrors.dob = "Date of birth cannot be a future date.";
-    }
-
-    if (!formData.gender) {
-      tempErrors.gender = "Please select your gender.";
-    }
-
-    if (formData.reason.trim().length < 10) {
-      tempErrors.reason = "Please describe your symptoms briefly (minimum 10 characters).";
-    }
+    if (!phoneRegex.test(formData.phone.replace(/[\s()-]/g, ''))) tempErrors.phone = "Please enter a valid phone number.";
+    if (new Date(formData.dob) > new Date()) tempErrors.dob = "Date of birth cannot be a future date.";
+    if (!formData.gender) tempErrors.gender = "Please select your gender.";
+    if (formData.reason.trim().length < 10) tempErrors.reason = "Please describe your symptoms briefly (minimum 10 characters).";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -102,25 +84,26 @@ const AppointmentUI = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    // Clear targeted inputs errors dynamically as the user modifies content
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: '' });
-    }
+    if (errors[name]) setErrors({ ...errors, [name]: '' });
   };
 
-  const handleDateSelect = (dateStr) => {
-    setFormData({ ...formData, date: dateStr, timeSlot: '' }); 
-  };
-
-  const handleSlotSelect = (slotTime) => {
-    setFormData({ ...formData, timeSlot: slotTime });
-  };
+  const handleDateSelect = (dateStr) => setFormData({ ...formData, date: dateStr, timeSlot: '' });
+  const handleSlotSelect = (slotTime) => setFormData({ ...formData, timeSlot: slotTime });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setStep(2);
-    }
+    if (validateForm()) setStep(2);
+  };
+
+  const handleReset = () => {
+    setStep(1);
+    setFormData({ ...formData, patientName: '', phone: '', dob: '', gender: '', reason: '', timeSlot: '' });
+  };
+
+  // Helper to format the final display date
+  const getDisplayDate = (dateStr) => {
+    const target = availableDates.find(d => d.fullDate === dateStr);
+    return target ? target.fullDisplay : dateStr;
   };
 
   return (
@@ -128,17 +111,22 @@ const AppointmentUI = () => {
       <div className="max-w-3xl mx-auto">
         
         {/* Header Module */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-10"
-        >
-          <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-4 text-blue-600">
-            <Activity size={28} />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-900">Book an Appointment</h1>
-          <p className="mt-2 text-slate-600">Please provide patient details and schedule preferences.</p>
-        </motion.div>
+        <AnimatePresence mode="wait">
+          {step === 1 && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="text-center mb-10"
+            >
+              <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-4 text-blue-600">
+                <Activity size={28} />
+              </div>
+              <h1 className="text-3xl font-bold text-slate-900">Book an Appointment</h1>
+              <p className="mt-2 text-slate-600">Please provide patient details and schedule preferences.</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence mode="wait">
           {step === 1 ? (
@@ -151,7 +139,7 @@ const AppointmentUI = () => {
             >
               <form onSubmit={handleSubmit} className="p-8">
                 
-                {/* Upgraded Day 4 Patient Details Form Section */}
+                {/* Patient Intake Form */}
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-4 border-b pb-2">
                     <ClipboardList className="text-slate-800" size={20} />
@@ -236,7 +224,7 @@ const AppointmentUI = () => {
                         required
                         onChange={handleInputChange}
                         className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.reason ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
-                        placeholder="Please describe what symptoms you are experiencing (e.g., persistent fever, headache for 2 days)..."
+                        placeholder="Please describe what symptoms you are experiencing..."
                       ></textarea>
                     </div>
                     {errors.reason && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.reason}</p>}
@@ -276,7 +264,7 @@ const AppointmentUI = () => {
                     </div>
                   </div>
 
-                  {/* Advanced Categorized Time Slots */}
+                  {/* Categorized Time Slots */}
                   <div className="space-y-6">
                     {timeSlotCategories.map((category, idx) => (
                       <div key={idx}>
@@ -320,36 +308,86 @@ const AppointmentUI = () => {
                   disabled={!formData.timeSlot || !formData.date}
                   className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-semibold shadow-lg shadow-blue-200 transition-colors mt-8"
                 >
-                  Confirm Appointment
+                  Proceed to Confirmation
                 </motion.button>
               </form>
             </motion.div>
           ) : (
-            /* Confirmation Message Module */
+            /* Upgraded Confirmation Summary Module */
             <motion.div
               key="success"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl shadow-xl p-10 text-center border border-slate-100"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100"
             >
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6"
-              >
-                <CheckCircle size={40} />
-              </motion.div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">Booking Confirmed!</h2>
-              <p className="text-slate-600 mb-6">
-                Thank you, <span className="font-semibold">{formData.patientName}</span>. Your appointment is scheduled for <span className="font-semibold text-blue-600">{formData.date}</span> at <span className="font-semibold text-blue-600">{formData.timeSlot}</span>.
-              </p>
-              <button 
-                onClick={() => setStep(1)}
-                className="text-blue-600 font-medium hover:text-blue-700 transition-colors underline outline-none"
-              >
-                Book another appointment
-              </button>
+              <div className="bg-blue-600 p-8 text-center text-white">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+                  className="w-20 h-20 bg-white text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
+                >
+                  <CheckCircle size={40} />
+                </motion.div>
+                <h2 className="text-2xl font-bold mb-2">Appointment Confirmed</h2>
+                <p className="text-blue-100 text-sm">A confirmation has been routed to your registered contact methods.</p>
+              </div>
+
+              <div className="p-8">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">Appointment Summary</h3>
+                
+                {/* Card Zoom Effect Implementation */}
+                <motion.div 
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8 transition-shadow hover:shadow-md"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+                    <div>
+                      <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Patient Name</span>
+                      <span className="text-slate-900 font-medium">{formData.patientName}</span>
+                    </div>
+                    <div>
+                      <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Contact Number</span>
+                      <span className="text-slate-900 font-medium">{formData.phone}</span>
+                    </div>
+                    <div>
+                      <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Scheduled Date</span>
+                      <span className="text-slate-900 font-medium">{getDisplayDate(formData.date)}</span>
+                    </div>
+                    <div>
+                      <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Time Slot</span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-100 text-blue-700 font-semibold text-sm">
+                        <Clock size={14} />
+                        {formData.timeSlot}
+                      </span>
+                    </div>
+                    <div className="md:col-span-2">
+                      <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Primary Symptom / Reason</span>
+                      <span className="text-slate-700 text-sm bg-white border border-slate-200 p-3 rounded-lg block mt-1">{formData.reason}</span>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-md transition-colors flex items-center justify-center gap-2"
+                  >
+                    <CalendarPlus size={18} />
+                    Add to Calendar
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleReset}
+                    className="flex-1 py-3 px-4 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-semibold shadow-sm transition-colors flex items-center justify-center gap-2"
+                  >
+                    <ArrowLeft size={18} />
+                    Book Another
+                  </motion.button>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
