@@ -100,17 +100,14 @@ const AppointmentUI = () => {
     setFormData({ ...formData, patientName: '', phone: '', dob: '', gender: '', reason: '', timeSlot: '' });
   };
 
-  // Helper to format the final display date
   const getDisplayDate = (dateStr) => {
     const target = availableDates.find(d => d.fullDate === dateStr);
     return target ? target.fullDisplay : dateStr;
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-3xl mx-auto">
-        
-        {/* Header Module */}
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div 
@@ -138,8 +135,6 @@ const AppointmentUI = () => {
               className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100"
             >
               <form onSubmit={handleSubmit} className="p-8">
-                
-                {/* Patient Intake Form */}
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-4 border-b pb-2">
                     <ClipboardList className="text-slate-800" size={20} />
@@ -151,15 +146,7 @@ const AppointmentUI = () => {
                       <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="text" 
-                          name="patientName"
-                          value={formData.patientName}
-                          required
-                          onChange={handleInputChange}
-                          className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.patientName ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
-                          placeholder="John Doe"
-                        />
+                        <input type="text" name="patientName" value={formData.patientName} required onChange={handleInputChange} className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${errors.patientName ? 'border-red-400' : 'border-slate-200'}`} placeholder="John Doe" />
                       </div>
                       {errors.patientName && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.patientName}</p>}
                     </div>
@@ -168,41 +155,20 @@ const AppointmentUI = () => {
                       <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="tel" 
-                          name="phone"
-                          value={formData.phone}
-                          required
-                          onChange={handleInputChange}
-                          className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.phone ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
-                          placeholder="+1 (555) 000-0000"
-                        />
+                        <input type="tel" name="phone" value={formData.phone} required onChange={handleInputChange} className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${errors.phone ? 'border-red-400' : 'border-slate-200'}`} placeholder="+1 (555) 000-0000" />
                       </div>
                       {errors.phone && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.phone}</p>}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">Date of Birth</label>
-                      <input 
-                        type="date" 
-                        name="dob"
-                        value={formData.dob}
-                        required
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.dob ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
-                      />
+                      <input type="date" name="dob" value={formData.dob} required onChange={handleInputChange} className={`w-full px-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${errors.dob ? 'border-red-400' : 'border-slate-200'}`} />
                       {errors.dob && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.dob}</p>}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">Gender Identity</label>
-                      <select 
-                        name="gender"
-                        value={formData.gender}
-                        required
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.gender ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
-                      >
+                      <select name="gender" value={formData.gender} required onChange={handleInputChange} className={`w-full px-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${errors.gender ? 'border-red-400' : 'border-slate-200'}`}>
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -214,24 +180,15 @@ const AppointmentUI = () => {
                   </div>
 
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Reason for Visit / Main Symptoms</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Reason for Visit / Symptoms</label>
                     <div className="relative">
                       <FileText className="absolute left-3 top-3 text-slate-400" size={18} />
-                      <textarea 
-                        name="reason"
-                        rows="3"
-                        value={formData.reason}
-                        required
-                        onChange={handleInputChange}
-                        className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors outline-none ${errors.reason ? 'border-red-400 bg-red-50/30' : 'border-slate-200'}`}
-                        placeholder="Please describe what symptoms you are experiencing..."
-                      ></textarea>
+                      <textarea name="reason" rows="3" value={formData.reason} required onChange={handleInputChange} className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${errors.reason ? 'border-red-400' : 'border-slate-200'}`} placeholder="Describe symptoms..."></textarea>
                     </div>
                     {errors.reason && <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.reason}</p>}
                   </div>
                 </div>
 
-                {/* Custom Interactive Date Picker */}
                 <div className="mb-8">
                   <div className="flex items-center gap-2 mb-4 border-b pb-2">
                     <CalendarDays className="text-slate-800" size={20} />
@@ -243,18 +200,7 @@ const AppointmentUI = () => {
                       {availableDates.map((d) => {
                         const isSelected = formData.date === d.fullDate;
                         return (
-                          <motion.button
-                            type="button"
-                            key={d.fullDate}
-                            whileHover={{ y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleDateSelect(d.fullDate)}
-                            className={`flex-shrink-0 flex flex-col items-center justify-center w-[72px] h-20 rounded-xl border transition-colors duration-200 ${
-                              isSelected 
-                                ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-200' 
-                                : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'
-                            }`}
-                          >
+                          <motion.button type="button" key={d.fullDate} whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }} onClick={() => handleDateSelect(d.fullDate)} className={`flex-shrink-0 flex flex-col items-center justify-center w-[72px] h-20 rounded-xl border transition-colors duration-200 ${isSelected ? 'bg-blue-600 border-blue-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'}`}>
                             <span className={`text-[11px] font-medium mb-1 ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>{d.dayName}</span>
                             <span className="text-xl font-bold">{d.dayNumber}</span>
                             <span className={`text-[10px] uppercase tracking-wider mt-0.5 ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>{d.month}</span>
@@ -264,7 +210,6 @@ const AppointmentUI = () => {
                     </div>
                   </div>
 
-                  {/* Categorized Time Slots */}
                   <div className="space-y-6">
                     {timeSlotCategories.map((category, idx) => (
                       <div key={idx}>
@@ -276,19 +221,7 @@ const AppointmentUI = () => {
                           {category.slots.map((slot, sIdx) => {
                             const isSelected = formData.timeSlot === slot.time;
                             return (
-                              <button
-                                type="button"
-                                key={sIdx}
-                                disabled={!slot.available}
-                                onClick={() => handleSlotSelect(slot.time)}
-                                className={`py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-200 ${
-                                  !slot.available 
-                                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-100'
-                                    : isSelected 
-                                      ? 'bg-blue-600 text-white shadow-md shadow-blue-200 border border-blue-600' 
-                                      : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm'
-                                }`}
-                              >
+                              <button type="button" key={sIdx} disabled={!slot.available} onClick={() => handleSlotSelect(slot.time)} className={`py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-200 ${!slot.available ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-100' : isSelected ? 'bg-blue-600 text-white shadow-md border border-blue-600' : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-300 hover:bg-blue-50'}`}>
                                 <Clock size={14} className={!slot.available ? 'opacity-50' : ''} />
                                 {slot.time}
                               </button>
@@ -300,33 +233,15 @@ const AppointmentUI = () => {
                   </div>
                 </div>
 
-                {/* Submit Button */}
-                <motion.button
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  disabled={!formData.timeSlot || !formData.date}
-                  className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-semibold shadow-lg shadow-blue-200 transition-colors mt-8"
-                >
+                <motion.button whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }} type="submit" disabled={!formData.timeSlot || !formData.date} className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-semibold shadow-lg shadow-blue-200 transition-colors mt-8">
                   Proceed to Confirmation
                 </motion.button>
               </form>
             </motion.div>
           ) : (
-            /* Upgraded Confirmation Summary Module */
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100"
-            >
+            <motion.div key="success" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
               <div className="bg-blue-600 p-8 text-center text-white">
-                <motion.div 
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                  className="w-20 h-20 bg-white text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
-                >
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }} className="w-20 h-20 bg-white text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <CheckCircle size={40} />
                 </motion.div>
                 <h2 className="text-2xl font-bold mb-2">Appointment Confirmed</h2>
@@ -335,12 +250,7 @@ const AppointmentUI = () => {
 
               <div className="p-8">
                 <h3 className="text-lg font-semibold text-slate-800 mb-4">Appointment Summary</h3>
-                
-                {/* Card Zoom Effect Implementation */}
-                <motion.div 
-                  whileHover={{ scale: 1.01 }}
-                  className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8 transition-shadow hover:shadow-md"
-                >
+                <motion.div whileHover={{ scale: 1.01 }} className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8 transition-shadow hover:shadow-md">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                     <div>
                       <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Patient Name</span>
@@ -369,29 +279,17 @@ const AppointmentUI = () => {
                 </motion.div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <motion.button 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-md transition-colors flex items-center justify-center gap-2"
-                  >
-                    <CalendarPlus size={18} />
-                    Add to Calendar
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="flex-1 py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-md flex items-center justify-center gap-2">
+                    <CalendarPlus size={18} /> Add to Calendar
                   </motion.button>
-                  <motion.button 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleReset}
-                    className="flex-1 py-3 px-4 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-semibold shadow-sm transition-colors flex items-center justify-center gap-2"
-                  >
-                    <ArrowLeft size={18} />
-                    Book Another
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleReset} className="flex-1 py-3 px-4 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg font-semibold shadow-sm flex items-center justify-center gap-2">
+                    <ArrowLeft size={18} /> Book Another
                   </motion.button>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
     </div>
   );
