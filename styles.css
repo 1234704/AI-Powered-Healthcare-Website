@@ -1,21 +1,17 @@
-/* ===================================================================
-   VITALCARE — Emergency / Blog / Contact
-   Design tokens
-   =================================================================== */
 :root {
-  --teal-deep: #0f3d3a;
-  --teal-mid: #1b5e56;
-  --teal-line: #2e7d70;
-  --bg-mist: #f2f6f4;
+  --teal-deep: #0f3355;
+  --teal-mid: #1d5fa8;
+  --teal-line: #2f8fe0;
+  --bg-mist: #d1e3fa;
   --card-white: #ffffff;
   --coral-alert: #e4483a;
   --coral-alert-deep: #b8352a;
   --gold-warm: #d9a441;
   --gold-warm-deep: #b3822c;
-  --ink: #12201d;
-  --ink-soft: #52625d;
-  --ink-faint: #8a9995;
-  --border-hair: #dde6e2;
+  --ink: #10192b;
+  --ink-soft: #4c5a70;
+  --ink-faint: #7c8aa2;
+  --border-hair: #dce3ee;
 
   --font-display: "Fraunces", "Georgia", serif;
   --font-body: "Work Sans", "Segoe UI", sans-serif;
@@ -23,8 +19,8 @@
 
   --radius-card: 14px;
   --radius-pill: 999px;
-  --shadow-soft: 0 12px 32px -16px rgba(15, 61, 58, 0.25);
-  --shadow-lift: 0 20px 48px -18px rgba(15, 61, 58, 0.35);
+  --shadow-soft: 0 12px 32px -16px rgba(56, 74, 109, 0.25);
+  --shadow-lift: 0 20px 48px -18px rgba(38, 52, 82, 0.35);
 }
 
 * { box-sizing: border-box; }
@@ -530,7 +526,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   display: none;
   align-items: center;
   gap: 10px;
-  background: #eaf6f0;
+  background: #e9f1fb;
   color: var(--teal-deep);
   padding: 14px 18px;
   border-radius: 10px;
@@ -582,7 +578,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* ===================== Footer ===================== */
 .site-footer {
   background: var(--teal-deep);
-  color: #cfe3de;
+  color: #cfe0ee;
   padding: 60px 0 28px;
   margin-top: 40px;
 }
@@ -599,7 +595,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .footer-grid a:hover { color: #fff; }
 .footer-bottom {
   display: flex; justify-content: space-between; padding-top: 24px;
-  font-size: 13px; color: #90ada5; flex-wrap: wrap; gap: 10px;
+  font-size: 13px; color: #85a0c2; flex-wrap: wrap; gap: 10px;
 }
 
 /* ===================== Responsive ===================== */
