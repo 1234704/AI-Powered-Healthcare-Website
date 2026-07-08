@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Users, ShieldCheck, Clock, Bell, User, ChevronDown } from 'lucide-react';
 import DoctorCard from './components/DoctorCard';
 import AppointmentUI from './components/AppointmentUI'; 
-import DoctorDetailsModal from './components/DoctorDetailsModal'; // Day 5 Integration
+import DoctorDetailsModal from './components/DoctorDetailsModal'; 
 
 const mockDoctors = [
   {
@@ -168,7 +168,14 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedDoctor, setSelectedDoctor] = useState(null); 
-  const [isBookingOpen, setIsBookingOpen] = useState(false); // Day 5: Multi-layer workflow lock
+  const [isBookingOpen, setIsBookingOpen] = useState(false); 
+  
+  // Day 7: Central in-memory registry for local state management
+  const [appointments, setAppointments] = useState([]);
+
+  const handleAddAppointment = (newAppointment) => {
+    setAppointments((prev) => [...prev, newAppointment]);
+  };
 
   const filteredDoctors = mockDoctors.filter((doctor) => {
     const matchesSearch = 
@@ -189,7 +196,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] font-sans antialiased selection:bg-blue-600 selection:text-white overflow-x-hidden">
       
-      {/* Premium Top Navigation Bar */}
+      
       <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black tracking-wider text-sm shadow-md shadow-blue-500/20">
@@ -201,7 +208,9 @@ const App = () => {
         <div className="flex items-center gap-3">
           <button className="w-9 h-9 text-slate-500 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-200/60 flex items-center justify-center transition-all relative">
             <Bell size={18} />
-            <span className="w-2 h-2 bg-blue-600 rounded-full absolute top-2 right-2.5" />
+            {appointments.length > 0 && (
+              <span className="w-2 h-2 bg-blue-600 rounded-full absolute top-2 right-2.5" />
+            )}
           </button>
           <div className="h-6 w-[1px] bg-slate-200" />
           <div className="flex items-center gap-1.5 cursor-pointer group p-1 rounded-xl hover:bg-slate-50 transition-colors">
@@ -213,10 +222,10 @@ const App = () => {
         </div>
       </nav>
 
-      {/* Main Container Dashboard Structure */}
+     
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         
-        {/* Page Header Area */}
+       
         <motion.div initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
@@ -230,7 +239,7 @@ const App = () => {
           </div>
         </motion.div>
 
-        {/* Dynamic Analytics Stats Panel */}
+       
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center gap-4">
             <div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Users size={20} /></div>
@@ -242,23 +251,25 @@ const App = () => {
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center gap-4">
             <div className="p-3 bg-amber-50 text-amber-500 rounded-xl"><ShieldCheck size={20} /></div>
             <div>
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Top Tier Verified</p>
-              <p className="text-xl font-black text-slate-800 mt-0.5">98% Satisfaction</p>
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Bookings</p>
+              <p className="text-xl font-black text-slate-800 mt-0.5">{appointments.length} Sessions</p>
             </div>
           </div>
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center gap-4">
             <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><Clock size={20} /></div>
             <div>
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Immediate Service</p>
-              <p className="text-xl font-black text-slate-800 mt-0.5">24/7 Availability</p>
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Latest Slot</p>
+              <p className="text-sm font-bold text-slate-700 mt-0.5 truncate max-w-[180px]">
+                {appointments.length > 0 ? appointments[appointments.length - 1].timeSlot : "No Active Booking"}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Fixed Flex Layout with solid Sidebar settings */}
+        
         <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
           
-          {/* Locked Sidebar Control Panel */}
+          
           <aside className="w-full lg:w-64 lg:min-w-64 lg:max-w-64 bg-white p-5 rounded-2xl shadow-xs border border-slate-200/60 lg:sticky lg:top-24 z-10 flex-shrink-0">
             <div className="flex items-center justify-between text-slate-800 mb-4 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
@@ -273,7 +284,7 @@ const App = () => {
             </div>
             
             <div className="space-y-5">
-              {/* Active Search Bar */}
+             
               <div className="relative">
                 <Search size={15} className="absolute left-3.5 top-3.5 text-slate-400" />
                 <input
@@ -285,7 +296,7 @@ const App = () => {
                 />
               </div>
 
-              {/* Active Specialty Filter List */}
+         
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2.5">Filter by Specialty</label>
                 <div className="space-y-1 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
@@ -314,7 +325,7 @@ const App = () => {
             </div>
           </aside>
 
-          {/* Main Content Area - 3D Perspective Grid */}
+        
           <main className="flex-1 w-full min-w-0" style={{ perspective: "1200px" }}>
             <motion.div 
               layout
@@ -330,7 +341,7 @@ const App = () => {
                     key={doctor.id}
                     onClick={() => {
                       setSelectedDoctor(doctor);
-                      setIsBookingOpen(false); // Modal hierarchy reset karein
+                      setIsBookingOpen(false); 
                     }}
                     className="h-full cursor-pointer"
                   >
@@ -340,7 +351,7 @@ const App = () => {
               </AnimatePresence>
             </motion.div>
 
-            {/* Edge-Case Empty Viewport */}
+            
             <AnimatePresence>
               {filteredDoctors.length === 0 && (
                 <motion.div 
@@ -363,7 +374,7 @@ const App = () => {
         </div>
       </div>
 
-      {/* Layer 1: Doctor Details Modal Integration */}
+      
       <AnimatePresence>
         {selectedDoctor && !isBookingOpen && (
           <DoctorDetailsModal 
@@ -374,7 +385,7 @@ const App = () => {
         )}
       </AnimatePresence>
 
-      {/* Layer 2: Appointment Form Drawer Layer */}
+      
       <AnimatePresence>
         {selectedDoctor && isBookingOpen && (
           <AppointmentUI 
@@ -383,6 +394,7 @@ const App = () => {
               setIsBookingOpen(false);
               setSelectedDoctor(null);
             }} 
+            onAppointmentConfirm={handleAddAppointment}
           />
         )}
       </AnimatePresence>

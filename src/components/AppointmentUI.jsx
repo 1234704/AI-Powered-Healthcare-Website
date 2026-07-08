@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, User, Phone, CheckCircle, Activity, X } from 'lucide-react';
+import { Calendar, Clock, User, Phone, CheckCircle, Activity, X, AlertCircle } from 'lucide-react';
 
-const AppointmentUI = ({ doctor, onClose }) => {
+
+const AppointmentUI = ({ doctor, onClose, onAppointmentConfirm }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     patientName: '',
@@ -12,30 +13,89 @@ const AppointmentUI = ({ doctor, onClose }) => {
     reason: ''
   });
 
+ 
+  const [errors, setErrors] = useState({});
+
   const timeSlots = ['09:00 AM', '10:30 AM', '11:00 AM', '02:00 PM', '03:30 PM', '05:00 PM'];
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: '' });
+    }
   };
 
   const handleSlotSelect = (slot) => {
     setFormData({ ...formData, timeSlot: slot });
+    if (errors.timeSlot) {
+      setErrors({ ...errors, timeSlot: '' });
+    }
+  };
+
+  
+  const validateForm = () => {
+    let localErrors = {};
+    
+ 
+    if (formData.patientName.trim().length < 3) {
+      localErrors.patientName = "Name must be at least 3 characters long.";
+    }
+
+    
+    const phoneRegex = /^((\+92)|(0092))?[- ]?3\d{2}[- ]?\d{7}$|^03\d{2}[- ]?\d{7}$/;
+    if (!phoneRegex.test(formData.phone.trim())) {
+      localErrors.phone = "Enter a valid Pakistani mobile number (e.g., 03001234567).";
+    }
+
+    
+    if (!formData.date) {
+      localErrors.date = "Please select a valid consultation date.";
+    } else {
+      const selectedDate = new Date(formData.date);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      if (selectedDate < today) {
+        localErrors.date = "Backdated appointments are not allowed.";
+      }
+    }
+
+    
+    if (!formData.timeSlot) {
+      localErrors.timeSlot = "Please pick an available shift slot.";
+    }
+
+    setErrors(localErrors);
+    return Object.keys(localErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStep(2);
+    
+   
+    if (validateForm()) {
+     
+      if (onAppointmentConfirm) {
+        onAppointmentConfirm({
+          id: Date.now(), 
+          doctorName: doctor?.name,
+          specialization: doctor?.specialization,
+          ...formData
+        });
+      }
+      setStep(2);
+    }
   };
 
   return (
-    /* Day 4 Fix: Static wrapper to motion.div for fluid backdrop fade exit */
+    
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 overflow-y-auto"
     >
-      {/* Click outside backdrop close trigger */}
+      
       <div className="absolute inset-0" onClick={onClose} />
 
       <motion.div
@@ -45,7 +105,7 @@ const AppointmentUI = ({ doctor, onClose }) => {
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
         className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 w-full max-w-lg relative z-10 my-auto"
       >
-        {/* Absolute Right Close Button Control */}
+       
         <button 
           onClick={onClose} 
           className="absolute right-5 top-5 text-slate-400 hover:text-slate-600 p-1.5 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all cursor-pointer z-20"
@@ -56,7 +116,7 @@ const AppointmentUI = ({ doctor, onClose }) => {
         {step === 1 ? (
           <form onSubmit={handleSubmit} className="p-6 sm:p-8">
             
-            {/* Header Area with Doctor Injection */}
+            
             <div className="flex items-center gap-4 border-b border-slate-100 pb-5 mb-6">
               <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Activity size={22} />
@@ -69,7 +129,7 @@ const AppointmentUI = ({ doctor, onClose }) => {
               </div>
             </div>
 
-            {/* Patient Details Section */}
+           
             <div className="space-y-4 mb-6">
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Patient Full Name</label>
@@ -78,13 +138,15 @@ const AppointmentUI = ({ doctor, onClose }) => {
                   <input 
                     type="text" 
                     name="patientName"
-                    required
                     value={formData.patientName}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400"
+                    className={`w-full pl-10 pr-4 h-11 bg-slate-50 border ${errors.patientName ? 'border-rose-500 bg-rose-50/20' : 'border-slate-200'} rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400`}
                     placeholder="Enter full name"
                   />
                 </div>
+                {errors.patientName && (
+                  <p className="text-[11px] text-rose-500 font-medium mt-1.5 flex items-center gap-1"><AlertCircle size={12} /> {errors.patientName}</p>
+                )}
               </div>
 
               <div>
@@ -94,16 +156,18 @@ const AppointmentUI = ({ doctor, onClose }) => {
                   <input 
                     type="tel" 
                     name="phone"
-                    required
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400"
-                    placeholder="+92 300 1234567"
+                    className={`w-full pl-10 pr-4 h-11 bg-slate-50 border ${errors.phone ? 'border-rose-500 bg-rose-50/20' : 'border-slate-200'} rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400`}
+                    placeholder="03001234567"
                   />
                 </div>
+                {errors.phone && (
+                  <p className="text-[11px] text-rose-500 font-medium mt-1.5 flex items-center gap-1"><AlertCircle size={12} /> {errors.phone}</p>
+                )}
               </div>
 
-              {/* Date Selection Layer */}
+             
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Select Date</label>
                 <div className="relative">
@@ -111,16 +175,18 @@ const AppointmentUI = ({ doctor, onClose }) => {
                   <input 
                     type="date" 
                     name="date"
-                    required
                     value={formData.date}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 h-11 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-slate-600"
+                    className={`w-full pl-10 pr-4 h-11 bg-slate-50 border ${errors.date ? 'border-rose-500 bg-rose-50/20' : 'border-slate-200'} rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-slate-600`}
                   />
                 </div>
+                {errors.date && (
+                  <p className="text-[11px] text-rose-500 font-medium mt-1.5 flex items-center gap-1"><AlertCircle size={12} /> {errors.date}</p>
+                )}
               </div>
             </div>
 
-            {/* Time Slot Picker Grid */}
+            
             <div className="mb-6">
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">Available Time Slots</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -132,7 +198,9 @@ const AppointmentUI = ({ doctor, onClose }) => {
                     className={`h-10 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
                       formData.timeSlot === slot 
                         ? 'bg-blue-600 text-white border-blue-600 shadow-xs' 
-                        : 'bg-slate-50 text-slate-600 border-slate-200/80 hover:border-slate-300 hover:bg-slate-100'
+                        : errors.timeSlot 
+                          ? 'bg-rose-50/30 text-slate-600 border-rose-300 hover:border-rose-400'
+                          : 'bg-slate-50 text-slate-600 border-slate-200/80 hover:border-slate-300 hover:bg-slate-100'
                     }`}
                   >
                     <Clock size={13} />
@@ -140,20 +208,22 @@ const AppointmentUI = ({ doctor, onClose }) => {
                   </button>
                 ))}
               </div>
+              {errors.timeSlot && (
+                <p className="text-[11px] text-rose-500 font-medium mt-2 flex items-center gap-1"><AlertCircle size={12} /> {errors.timeSlot}</p>
+              )}
             </div>
 
-            {/* Action Lock Trigger Submit */}
+            
             <motion.button
               whileTap={{ scale: 0.98 }}
               type="submit"
-              disabled={!formData.timeSlot}
-              className="w-full h-12 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-500/10 transition-colors cursor-pointer"
+              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-500/10 transition-colors cursor-pointer"
             >
               Confirm Appointment
             </motion.button>
           </form>
         ) : (
-          /* Confirmation Success Screen Overlay context */
+          
           <div className="p-8 text-center flex flex-col items-center">
             <motion.div 
               initial={{ scale: 0 }}
