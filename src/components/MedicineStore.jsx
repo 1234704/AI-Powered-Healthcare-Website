@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 const medicines = [
-  { id: 1, name: "Panadol Extra", category: "Pain Relief", price: 120, unit: "20 Tablets", icon: "💊", stock: "In Stock", brand: "GSK", dosage: "1-2 tablets every 4-6 hours. Max 8 tablets in 24 hours.", description: "Panadol Extra provides fast and effective relief from headaches, toothaches, backaches, and fever. Contains paracetamol 500mg + caffeine 65mg for enhanced pain relief.", sideEffects: "Nausea, allergic reactions (rare). Do not exceed recommended dose.", prescription: "Not Required" },
-  { id: 2, name: "Augmentin 625mg", category: "Antibiotic", price: 450, unit: "10 Tablets", icon: "💊", stock: "In Stock", brand: "GSK", dosage: "1 tablet twice daily with meals for 5-7 days.", description: "Augmentin is a broad-spectrum antibiotic used to treat bacterial infections including respiratory tract infections, skin infections, and urinary tract infections.", sideEffects: "Diarrhea, nausea, skin rash. Avoid if allergic to penicillin.", prescription: "Required" },
-  { id: 3, name: "Cough Syrup", category: "Cold & Flu", price: 180, unit: "100ml Bottle", icon: "🧴", stock: "In Stock", brand: "Reckitt", dosage: "10ml three times daily. Shake well before use.", description: "Effective relief from dry and productive cough. Contains dextromethorphan and guaifenesin for dual-action cough suppression and mucus thinning.", sideEffects: "Drowsiness, dizziness. Avoid driving after use.", prescription: "Not Required" },
+  { id: 1, name: "Panadol Extra", category: "Pain Relief", price: 120, unit: "20 Tablets", icon: "💊", stock: "In Stock", brand: "GSK", dosage: "1-2 tablets every 4-6 hours. Max 8 tablets in 24 hours.", description: "Panadol Extra provides fast and effective relief from headaches, toothaches, backaches, and fever. Contains paracetamol 500mg + caffeine 65mg.", sideEffects: "Nausea, allergic reactions (rare). Do not exceed recommended dose.", prescription: "Not Required" },
+  { id: 2, name: "Augmentin 625mg", category: "Antibiotic", price: 450, unit: "10 Tablets", icon: "💊", stock: "In Stock", brand: "GSK", dosage: "1 tablet twice daily with meals for 5-7 days.", description: "Broad-spectrum antibiotic used to treat bacterial infections including respiratory tract, skin, and urinary tract infections.", sideEffects: "Diarrhea, nausea, skin rash. Avoid if allergic to penicillin.", prescription: "Required" },
+  { id: 3, name: "Cough Syrup", category: "Cold & Flu", price: 180, unit: "100ml Bottle", icon: "🧴", stock: "In Stock", brand: "Reckitt", dosage: "10ml three times daily. Shake well before use.", description: "Effective relief from dry and productive cough with dual-action cough suppression and mucus thinning.", sideEffects: "Drowsiness, dizziness. Avoid driving after use.", prescription: "Not Required" },
   { id: 4, name: "Vitamin C 1000mg", category: "Supplements", price: 350, unit: "30 Tablets", icon: "💊", stock: "In Stock", brand: "HealthVit", dosage: "1 tablet daily with water after meals.", description: "High-dose Vitamin C supplement to boost immunity, promote skin health, and provide antioxidant protection.", sideEffects: "Stomach upset if taken on empty stomach.", prescription: "Not Required" },
-  { id: 5, name: "Insulin Pen", category: "Diabetes Care", price: 1200, unit: "1 Pen", icon: "💉", stock: "Limited Stock", brand: "Novo Nordisk", dosage: "As prescribed by your doctor.", description: "Pre-filled insulin pen for convenient and accurate insulin delivery. Suitable for Type 1 and Type 2 diabetes patients.", sideEffects: "Hypoglycemia, injection site reactions.", prescription: "Required" },
+  { id: 5, name: "Insulin Pen", category: "Diabetes Care", price: 1200, unit: "1 Pen", icon: "💉", stock: "Limited Stock", brand: "Novo Nordisk", dosage: "As prescribed by your doctor.", description: "Pre-filled insulin pen for convenient and accurate insulin delivery for Type 1 and Type 2 diabetes patients.", sideEffects: "Hypoglycemia, injection site reactions. Monitor blood sugar regularly.", prescription: "Required" },
   { id: 6, name: "Disprin", category: "Pain Relief", price: 60, unit: "10 Tablets", icon: "💊", stock: "In Stock", brand: "Reckitt", dosage: "1-2 tablets dissolved in water every 4-6 hours.", description: "Aspirin-based effervescent tablet for fast pain relief, fever reduction, and mild anti-inflammatory action.", sideEffects: "Stomach irritation, not recommended for children under 12.", prescription: "Not Required" },
-  { id: 7, name: "ORS Sachets", category: "First Aid", price: 90, unit: "5 Sachets", icon: "🧂", stock: "In Stock", brand: "Servier", dosage: "Dissolve 1 sachet in 1 litre of clean water.", description: "Oral Rehydration Salts for rapid rehydration during diarrhea, vomiting, or dehydration.", sideEffects: "None when used as directed.", prescription: "Not Required" },
-  { id: 8, name: "Calpol Syrup", category: "Cold & Flu", price: 150, unit: "60ml Bottle", icon: "🧴", stock: "In Stock", brand: "GSK", dosage: "Children 6-12 years: 10ml every 4-6 hours.", description: "Paracetamol-based syrup specially formulated for children with pleasant strawberry flavour.", sideEffects: "Rare allergic reactions. Do not exceed recommended dose.", prescription: "Not Required" },
+  { id: 7, name: "ORS Sachets", category: "First Aid", price: 90, unit: "5 Sachets", icon: "🧂", stock: "In Stock", brand: "Servier", dosage: "Dissolve 1 sachet in 1 litre of clean water.", description: "Oral Rehydration Salts for rapid rehydration during diarrhea, vomiting, or dehydration. WHO formula.", sideEffects: "None when used as directed. Safe for all ages.", prescription: "Not Required" },
+  { id: 8, name: "Calpol Syrup", category: "Cold & Flu", price: 150, unit: "60ml Bottle", icon: "🧴", stock: "In Stock", brand: "GSK", dosage: "Children 6-12 years: 10ml every 4-6 hours. Max 4 doses in 24 hours.", description: "Paracetamol-based syrup for children with pleasant strawberry flavour for gentle fever and pain relief.", sideEffects: "Rare allergic reactions. Do not exceed recommended dose.", prescription: "Not Required" },
 ];
 
 const categories = ["All", "Pain Relief", "Antibiotic", "Cold & Flu", "Supplements", "Diabetes Care", "First Aid"];
@@ -20,6 +20,7 @@ export default function MedicineStore() {
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
   const [addedId, setAddedId] = useState(null);
+  const [removedId, setRemovedId] = useState(null);
 
   const filteredMedicines = medicines.filter((m) => {
     const matchCategory = activeCategory === "All" || m.category === activeCategory;
@@ -27,6 +28,7 @@ export default function MedicineStore() {
     return matchCategory && matchSearch;
   });
 
+  // Add to cart
   const addToCart = (med, e) => {
     e?.stopPropagation();
     setCart((prev) => {
@@ -37,6 +39,25 @@ export default function MedicineStore() {
     setAddedId(med.id);
     setTimeout(() => setAddedId(null), 1200);
   };
+
+  // Update quantity — Day 6
+  const updateQty = (id, delta) => {
+    setCart((prev) =>
+      prev.map((i) => i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i)
+    );
+  };
+
+  // Remove item — Day 7
+  const removeItem = (id) => {
+    setRemovedId(id);
+    setTimeout(() => {
+      setCart((prev) => prev.filter((i) => i.id !== id));
+      setRemovedId(null);
+    }, 350);
+  };
+
+  // Clear cart
+  const clearCart = () => setCart([]);
 
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
@@ -54,11 +75,12 @@ export default function MedicineStore() {
           <p style={styles.subtitle}>Genuine medicines delivered to your doorstep.</p>
         </div>
 
-        {/* Search + Cart Button Row */}
+        {/* Search + Cart Row */}
         <div style={styles.topRow}>
           <div style={styles.searchBar}>
             <span>🔍</span>
-            <input type="text" placeholder="Search medicines..." value={search} onChange={(e) => setSearch(e.target.value)} style={styles.searchInput} />
+            <input type="text" placeholder="Search medicines..." value={search}
+              onChange={(e) => setSearch(e.target.value)} style={styles.searchInput} />
             {search && <button onClick={() => setSearch("")} style={styles.clearBtn}>✕</button>}
           </div>
           <button style={styles.cartBtn} onClick={() => setShowCart(true)}>
@@ -83,7 +105,9 @@ export default function MedicineStore() {
             <div key={med.id} className="medicine-card" style={styles.card} onClick={() => setSelectedMedicine(med)}>
               <div style={styles.cardImageWrap}>
                 <span style={styles.cardIcon}>{med.icon}</span>
-                <span style={{ ...styles.stockBadge, ...(med.stock === "Limited Stock" ? styles.stockLimited : {}) }}>{med.stock}</span>
+                <span style={{ ...styles.stockBadge, ...(med.stock === "Limited Stock" ? styles.stockLimited : {}) }}>
+                  {med.stock}
+                </span>
               </div>
               <div style={styles.cardBody}>
                 <span style={styles.cardCategory}>{med.category}</span>
@@ -134,9 +158,11 @@ export default function MedicineStore() {
                 <p style={styles.modalPriceLabel}>Price</p>
                 <p style={styles.modalPrice}>Rs. {selectedMedicine.price}</p>
               </div>
-              <button style={{ ...styles.addCartBtn, ...(addedId === selectedMedicine.id ? styles.addBtnSuccess : {}) }}
-                onClick={() => addToCart(selectedMedicine)}>
-                {addedId === selectedMedicine.id ? "✓ Added to Cart!" : "🛒 Add to Cart"}
+              <button
+                style={{ ...styles.addCartBtn, ...(addedId === selectedMedicine.id ? styles.addBtnSuccess : {}) }}
+                onClick={() => addToCart(selectedMedicine)}
+              >
+                {addedId === selectedMedicine.id ? "✓ Added!" : "🛒 Add to Cart"}
               </button>
             </div>
           </div>
@@ -159,24 +185,45 @@ export default function MedicineStore() {
               </div>
             ) : (
               <>
+                {/* Clear all button */}
+                <button style={styles.clearAllBtn} onClick={clearCart}>🗑️ Clear All</button>
+
                 <div style={styles.cartItems}>
                   {cart.map((item) => (
-                    <div key={item.id} style={styles.cartItem}>
+                    <div
+                      key={item.id}
+                      style={{
+                        ...styles.cartItem,
+                        opacity: removedId === item.id ? 0 : 1,
+                        transform: removedId === item.id ? "translateX(30px)" : "translateX(0)",
+                        transition: "all 0.35s ease",
+                      }}
+                    >
                       <span style={styles.cartItemIcon}>{item.icon}</span>
                       <div style={styles.cartItemInfo}>
                         <p style={styles.cartItemName}>{item.name}</p>
                         <p style={styles.cartItemUnit}>{item.unit}</p>
+                        <p style={styles.cartItemPrice}>Rs. {item.price * item.qty}</p>
                       </div>
                       <div style={styles.cartItemRight}>
-                        <p style={styles.cartItemPrice}>Rs. {item.price * item.qty}</p>
-                        <p style={styles.cartItemQty}>Qty: {item.qty}</p>
+                        {/* Quantity Controls — Day 6 */}
+                        <div style={styles.qtyControls}>
+                          <button style={styles.qtyBtn} onClick={() => updateQty(item.id, -1)}>−</button>
+                          <span style={styles.qtyNum}>{item.qty}</span>
+                          <button style={styles.qtyBtn} onClick={() => updateQty(item.id, 1)}>+</button>
+                        </div>
+                        {/* Remove Button — Day 7 */}
+                        <button style={styles.removeBtn} onClick={() => removeItem(item.id)}>
+                          🗑️ Remove
+                        </button>
                       </div>
                     </div>
                   ))}
                 </div>
+
                 <div style={styles.cartFooter}>
                   <div style={styles.cartTotal}>
-                    <span>Total</span>
+                    <span>Total ({cartCount} items)</span>
                     <span style={styles.cartTotalAmount}>Rs. {cartTotal}</span>
                   </div>
                   <button style={styles.checkoutBtn}>Proceed to Checkout →</button>
@@ -243,22 +290,26 @@ const styles = {
   modalPriceLabel: { fontSize: "0.75rem", color: "#A0AEC0", fontWeight: "600" },
   modalPrice: { fontSize: "1.6rem", fontWeight: "800", color: "#1A202C" },
   addCartBtn: { background: "#0D9488", color: "white", border: "none", borderRadius: "12px", padding: "14px 28px", fontSize: "0.95rem", fontWeight: "700", cursor: "pointer", transition: "all 0.2s" },
-  // Cart Sidebar
-  cartSidebar: { background: "white", borderRadius: "24px", padding: "28px", maxWidth: "420px", width: "100%", maxHeight: "90vh", overflowY: "auto", position: "relative" },
-  cartHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" },
+  // Cart
+  cartSidebar: { background: "white", borderRadius: "24px", padding: "28px", maxWidth: "440px", width: "100%", maxHeight: "90vh", overflowY: "auto", position: "relative" },
+  cartHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" },
   cartTitle: { fontSize: "1.2rem", fontWeight: "800", color: "#1A202C" },
+  clearAllBtn: { background: "none", border: "1px solid #FC8181", color: "#E53E3E", borderRadius: "8px", padding: "6px 14px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer", marginBottom: "16px" },
   emptyCart: { textAlign: "center", padding: "40px 0" },
-  cartItems: { display: "flex", flexDirection: "column", gap: "14px", marginBottom: "24px" },
-  cartItem: { display: "flex", alignItems: "center", gap: "12px", background: "#F7FAFC", borderRadius: "12px", padding: "14px" },
-  cartItemIcon: { fontSize: "1.8rem" },
+  cartItems: { display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" },
+  cartItem: { display: "flex", alignItems: "center", gap: "12px", background: "#F7FAFC", borderRadius: "14px", padding: "14px" },
+  cartItemIcon: { fontSize: "1.8rem", flexShrink: 0 },
   cartItemInfo: { flex: 1 },
-  cartItemName: { fontSize: "0.95rem", fontWeight: "700", color: "#1A202C", marginBottom: "2px" },
-  cartItemUnit: { fontSize: "0.8rem", color: "#A0AEC0" },
-  cartItemRight: { textAlign: "right" },
-  cartItemPrice: { fontSize: "1rem", fontWeight: "800", color: "#1A202C" },
-  cartItemQty: { fontSize: "0.8rem", color: "#A0AEC0" },
+  cartItemName: { fontSize: "0.9rem", fontWeight: "700", color: "#1A202C", marginBottom: "2px" },
+  cartItemUnit: { fontSize: "0.75rem", color: "#A0AEC0", marginBottom: "4px" },
+  cartItemPrice: { fontSize: "0.95rem", fontWeight: "800", color: "#0D9488" },
+  cartItemRight: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px" },
+  qtyControls: { display: "flex", alignItems: "center", gap: "8px", background: "white", borderRadius: "8px", padding: "4px 8px", border: "1px solid #E2E8F0" },
+  qtyBtn: { background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem", fontWeight: "700", color: "#0D9488", width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" },
+  qtyNum: { fontSize: "0.95rem", fontWeight: "700", color: "#1A202C", minWidth: "20px", textAlign: "center" },
+  removeBtn: { background: "none", border: "none", color: "#E53E3E", fontSize: "0.75rem", fontWeight: "700", cursor: "pointer", padding: "0" },
   cartFooter: { borderTop: "1px solid #EDF2F7", paddingTop: "20px" },
-  cartTotal: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", fontSize: "1rem", fontWeight: "700", color: "#2D3748" },
+  cartTotal: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", fontSize: "0.95rem", fontWeight: "700", color: "#2D3748" },
   cartTotalAmount: { fontSize: "1.4rem", fontWeight: "800", color: "#1A202C" },
   checkoutBtn: { width: "100%", background: "#0D9488", color: "white", border: "none", borderRadius: "12px", padding: "14px", fontSize: "1rem", fontWeight: "700", cursor: "pointer" },
 };
@@ -267,5 +318,8 @@ const css = `
   .medicine-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 28px rgba(0,0,0,0.1) !important;
+  }
+  @media (max-width: 480px) {
+    .medicine-card { font-size: 0.95rem; }
   }
 `;
