@@ -5,6 +5,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./src/config/db'); 
 const errorHandler = require('./src/middleware/error.middleware'); 
+const { globalLimiter, authLimiter, aiLimiter } = require('./src/middleware/rateLimiter.middleware');
+
 
 // Route Imports
 const authRoutes = require('./src/modules/auth/auth.routes');
@@ -28,6 +30,16 @@ if (config.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
+// --- APPLY RATE LIMITING ---
+// Apply global limiter to all routes
+app.use('/api', globalLimiter);
+
+// Apply strict limits to Auth and AI specifically
+app.use('/api/auth', authLimiter);
+app.use('/api/ai', aiLimiter); 
+
+
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes); 
@@ -48,5 +60,5 @@ app.use(errorHandler);
 
 const PORT = config.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`🚀 Server running in ${config.NODE_ENV} mode on port ${PORT}`);
+    console.log(` Server running in ${config.NODE_ENV} mode on port ${PORT}`);
 });
