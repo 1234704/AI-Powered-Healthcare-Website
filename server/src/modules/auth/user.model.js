@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
   role: { type: String, enum: ['patient', 'doctor', 'admin'], default: 'patient' },
 }, { timestamps: true });
 
