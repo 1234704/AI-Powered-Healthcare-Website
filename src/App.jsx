@@ -8,6 +8,7 @@ import MedicineStore from './components/MedicineStore';
 import DoctorCard from './components/DoctorCard';
 import AppointmentUI from './components/AppointmentUI';
 import DoctorDetailsModal from './components/DoctorDetailsModal';
+import Checkout from './components/Checkout/Checkout';
 
 const mockDoctors = [
   {
@@ -361,6 +362,11 @@ const App = () => {
 
       {/* Ahmed's Medicine Store Component */}
       <MedicineStore />
+      
+      {/* Ali's Checkout Component */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <Checkout />
+      </div>
 
       {/* Doctor Modals */}
       <AnimatePresence>
