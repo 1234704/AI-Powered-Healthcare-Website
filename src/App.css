@@ -182,6 +182,7 @@
     border-right-color: var(--border);
   }
 }
+<<<<<<< HEAD
 /* Fade-in Animation */
 @keyframes fadeIn {
   from {
@@ -389,3 +390,5 @@ img {
     padding: 20px !important;
   }
 }
+=======
+>>>>>>> origin/feature/doctor-module

@@ -1,5 +1,5 @@
 {
-  "name": "healthcare-web",
+  "name": "healthcare-website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -16,7 +16,6 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
