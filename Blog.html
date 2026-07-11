@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Health Blog | Codecelix HealthCare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="index.html" class="brand"><span class="pulse-dot"></span> Codecelix HealthCare</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="emergency.html">Emergency</a></li>
+      <li><a href="blog.html" class="active">Health Blog</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="tel:1122" class="nav-emergency-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8z" fill="currentColor"/></svg>
+      Call 1122
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" style="padding-bottom:40px;">
+    <div class="container">
+      <span class="eyebrow"><span class="pulse-dot"></span> Health Blog</span>
+      <h1 style="max-width:640px;">Read the signs your<br>body sends first.</h1>
+      <p class="lede">Practical, doctor-reviewed guidance on staying well and understanding what your symptoms are telling you.</p>
+      <svg class="pulse-rule" viewBox="0 0 700 34" style="color:var(--gold-warm); max-width:700px;">
+        <path d="M0 17 H240 L255 5 L270 30 L285 2 L300 17 H700" />
+      </svg>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+
+      <!-- Category filter -->
+      <div class="category-tabs reveal">
+        <button class="category-tab active" data-filter="all">All Articles</button>
+        <button class="category-tab" data-filter="tips">Health Tips</button>
+        <button class="category-tab" data-filter="disease">Disease Information</button>
+        <button class="category-tab" data-filter="nutrition">Nutrition</button>
+      </div>
+
+      <!-- Featured post -->
+      <div class="blog-feature reveal">
+        <div class="blog-feature-media">
+          <svg viewBox="0 0 400 320" preserveAspectRatio="xMidYMid slice">
+            <circle cx="90" cy="60" r="100" fill="#ffffff" opacity="0.12"/>
+            <circle cx="330" cy="260" r="130" fill="#ffffff" opacity="0.1"/>
+            <path d="M40 200 H140 L155 170 L175 230 L195 150 L215 200 H360" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+          </svg>
+        </div>
+        <div class="blog-feature-body">
+          <span class="cat-label">Health Tips</span>
+          <h3>Seven habits your heart notices by 40</h3>
+          <p>Small, repeatable choices — sleep timing, salt awareness, and short walks after meals — compound into measurably lower cardiac risk over a decade.</p>
+          <div class="post-meta">
+            <span>Dr. Amina Raza</span> <span>•</span> <span>6 min read</span> <span>•</span> <span>Updated Jun 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid of posts -->
+      <div class="blog-grid">
+
+        <article class="blog-card reveal reveal-delay-1" data-cat="tips">
+          <div class="blog-card-media">
+            <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+              <rect width="300" height="150" fill="#1b5e56"/>
+              <circle cx="240" cy="30" r="60" fill="#ffffff" opacity="0.08"/>
+              <path d="M20 100 H100 L112 80 L128 120 L144 60 L160 100 H280" fill="none" stroke="#d9a441" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="blog-card-body">
+            <span class="cat-label">Health Tips</span>
+            <h4>Sleep debt: why weekends don't repay it</h4>
+            <p>Catching up on sleep only offsets part of the cognitive cost of a short week.</p>
+            <a href="#" class="read-more">Read article →</a>
+          </div>
+        </article>
+
+        <article class="blog-card reveal reveal-delay-2" data-cat="disease">
+          <div class="blog-card-media">
+            <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+              <rect width="300" height="150" fill="#e4483a"/>
+              <circle cx="60" cy="120" r="70" fill="#ffffff" opacity="0.08"/>
+              <path d="M20 90 H90 L102 60 L118 130 L134 40 L150 90 H280" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="blog-card-body">
+            <span class="cat-label">Disease Information</span>
+            <h4>Understanding Type 2 diabetes early markers</h4>
+            <p>Fasting glucose alone can miss it — here's what else your labs should include.</p>
+            <a href="#" class="read-more">Read article →</a>
+          </div>
+        </article>
+
+        <article class="blog-card reveal reveal-delay-3" data-cat="nutrition">
+          <div class="blog-card-media">
+            <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+              <rect width="300" height="150" fill="#d9a441"/>
+              <circle cx="230" cy="110" r="55" fill="#ffffff" opacity="0.1"/>
+              <path d="M20 100 H100 L114 70 L130 120 L146 55 L162 100 H280" fill="none" stroke="#0f3d3a" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="blog-card-body">
+            <span class="cat-label">Nutrition</span>
+            <h4>Iron-rich meals that aren't red meat</h4>
+            <p>Lentils, pumpkin seeds, and dark leafy greens, paired correctly with vitamin C.</p>
+            <a href="#" class="read-more">Read article →</a>
+          </div>
+        </article>
+
+        <article class="blog-card reveal reveal-delay-1" data-cat="disease">
+          <div class="blog-card-media">
+            <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+              <rect width="300" height="150" fill="#0f3d3a"/>
+              <circle cx="80" cy="30" r="50" fill="#ffffff" opacity="0.08"/>
+              <path d="M20 100 H90 L104 70 L120 120 L136 55 L152 100 H280" fill="none" stroke="#e4483a" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="blog-card-body">
+            <span class="cat-label">Disease Information</span>
+            <h4>Migraine vs. tension headache: telling them apart</h4>
+            <p>Location, light sensitivity, and duration point to very different treatments.</p>
+            <a href="#" class="read-more">Read article →</a>
+          </div>
+        </article>
+
+        <article class="blog-card reveal reveal-delay-2" data-cat="tips">
+          <div class="blog-card-media">
+            <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+              <rect width="300" height="150" fill="#1b5e56"/>
+              <circle cx="240" cy="120" r="60" fill="#ffffff" opacity="0.08"/>
+              <path d="M20 90 H100 L112 65 L128 115 L144 50 L160 90 H280" fill="none" stroke="#d9a441" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="blog-card-body">
+            <span class="cat-label">Health Tips</span>
+            <h4>Desk posture fixes that take under a minute</h4>
+            <p>Three micro-adjustments physiotherapists actually recommend, not gimmicks.</p>
+            <a href="#" class="read-more">Read article →</a>
+          </div>
+        </article>
+
+        <article class="blog-card reveal reveal-delay-3" data-cat="nutrition">
+          <div class="blog-card-media">
+            <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+              <rect width="300" height="150" fill="#d9a441"/>
+              <circle cx="60" cy="30" r="45" fill="#ffffff" opacity="0.1"/>
+              <path d="M20 100 H90 L104 75 L120 125 L136 60 L152 100 H280" fill="none" stroke="#0f3d3a" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="blog-card-body">
+            <span class="cat-label">Nutrition</span>
+            <h4>Hydration myths, tested against evidence</h4>
+            <p>The "eight glasses a day" rule oversimplifies what your body actually needs.</p>
+            <a href="#" class="read-more">Read article →</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Codecelix HealthCare</div>
+        <p style="max-width:260px; font-size:14px;">A calmer way to reach the care you need — from routine checkups to the middle-of-the-night emergency.</p>
+      </div>
+      <div>
+        <h5>Navigate</h5>
+        <ul><li><a href="index.html">Home</a></li><li><a href="emergency.html">Emergency</a></li><li><a href="blog.html">Health Blog</a></li><li><a href="contact.html">Contact</a></li></ul>
+      </div>
+      <div>
+        <h5>Categories</h5>
+        <ul><li>Health Tips</li><li>Disease Information</li><li>Nutrition</li></ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul><li><a href="mailto:care@Codecelix Healthcare.health">@Codecelix HealthCare.health</a></li><li><a href="tel:+92511234567">+92 51 123 4567</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 VitalCare. All rights reserved.</span>
+      <span>Built for the AI-Powered Healthcare Website project.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
