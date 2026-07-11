@@ -1,6 +1,7 @@
 import React from 'react';
 import Home from './components/Home';
 import AppointmentUI from './components/AppointmentUI';
+import MedicineStore from './components/MedicineStore';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <div className="App"></div>
         <Home />
       <AppointmentUI />
+      <MedicineStore />
     </div>
   );
 }
