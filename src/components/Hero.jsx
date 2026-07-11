@@ -30,36 +30,46 @@ const Hero = () => {
           Book appointments with top doctors, search medicines, 
           and access lab tests all in one place.
         </p>
-        <button style={{
-          padding: '14px 40px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '50px',
-          fontSize: '18px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.backgroundColor = '#0056b3';
-          e.target.style.transform = 'scale(1.05)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.backgroundColor = '#007bff';
-          e.target.style.transform = 'scale(1)';
-        }}>
+        <button 
+          // Added the onClick handler here
+          onClick={() => {
+            const bookBtn = document.getElementById('main-book-btn');
+            if (bookBtn) {
+              bookBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              setTimeout(() => bookBtn.click(), 400);
+            }
+          }}
+          style={{
+            padding: '14px 40px',
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '50px',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#0056b3';
+            e.target.style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = '#007bff';
+            e.target.style.transform = 'scale(1)';
+          }}
+        >
           Get Started →
         </button>
       </div>
 
       {/* Right Side - Image */}
       <div style={{ flex: 1, textAlign: 'center' }}>
-      <img 
-  src={healthcareImage} 
-  alt="Healthcare" 
-  style={{ maxWidth: '100%', height: 'auto', borderRadius: '20px' }}
-/>
+        <img 
+          src={healthcareImage} 
+          alt="Healthcare" 
+          style={{ maxWidth: '100%', height: 'auto', borderRadius: '20px' }}
+        />
       </div>
     </section>
   );

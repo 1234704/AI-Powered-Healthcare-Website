@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { X, Star, Calendar, MapPin, Award, CheckCircle2, MessageSquare, ThumbsUp, Clock, CalendarDays } from 'lucide-react';
 
 const getUniqueReviews = (doctorId) => {
-  
   const reviewsPool = {
     1: [
       { name: "Kamran Shahzad", date: "2 days ago", rating: 5, comment: "Dr. Ali is exceptional. He explained my ECG report very clearly and changed my medication." },
@@ -79,7 +78,6 @@ const DoctorDetailsModal = ({ doctor, onClose, onBookAppointment }) => {
           <X size={16} />
         </button>
 
-        
         <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 p-6 sm:p-8 text-white flex flex-col sm:flex-row gap-6 items-start sm:items-center">
           <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-2 border-white/20 overflow-hidden shadow-xl flex-shrink-0 relative">
             <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
@@ -95,10 +93,7 @@ const DoctorDetailsModal = ({ doctor, onClose, onBookAppointment }) => {
           </div>
         </div>
 
-       
         <div className="p-6 sm:p-8 space-y-6 max-h-[calc(100vh-320px)] overflow-y-auto custom-scrollbar bg-slate-50/50 flex-1">
-          
-          
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-xl border border-slate-200/60 shadow-xs flex items-start gap-3">
               <div className="p-2 bg-blue-50 text-blue-600 rounded-lg mt-0.5"><CheckCircle2 size={16} /></div>
@@ -116,14 +111,11 @@ const DoctorDetailsModal = ({ doctor, onClose, onBookAppointment }) => {
             </div>
           </div>
 
-          
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50/60 border border-blue-100 rounded-xl p-4 space-y-3 shadow-2xs">
             <h3 className="text-xs font-black uppercase tracking-wider text-blue-800 flex items-center gap-1.5">
               <CalendarDays size={14} /> Weekly Shift Schedule
             </h3>
-            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
-              
               <div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1.5">Available Days</span>
                 <div className="flex flex-wrap gap-1.5">
@@ -134,8 +126,6 @@ const DoctorDetailsModal = ({ doctor, onClose, onBookAppointment }) => {
                   ))}
                 </div>
               </div>
-
-              
               <div className="bg-white border border-slate-200/60 rounded-xl p-2.5 flex items-center gap-2.5 shadow-3xs">
                 <div className="p-1.5 bg-amber-50 text-amber-600 rounded-lg"><Clock size={15} /></div>
                 <div>
@@ -145,7 +135,6 @@ const DoctorDetailsModal = ({ doctor, onClose, onBookAppointment }) => {
               </div>
             </div>
           </div>
-          
 
           <div className="space-y-2 bg-white p-4 rounded-xl border border-slate-200/60 shadow-xs">
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
@@ -156,7 +145,6 @@ const DoctorDetailsModal = ({ doctor, onClose, onBookAppointment }) => {
             </p>
           </div>
 
-          
           <div className="space-y-3">
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
               <MessageSquare size={14} className="text-blue-600" /> Patient Experiences ({uniqueReviews.length})
@@ -183,20 +171,18 @@ const DoctorDetailsModal = ({ doctor, onClose, onBookAppointment }) => {
               ))}
             </div>
           </div>
-
         </div>
 
-        
         <div className="p-4 bg-white border-t border-slate-100 flex items-center justify-between gap-4">
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Consultation Fee</span>
-            <span className="text-base font-black text-slate-800">Rs. 2,500 <span className="text-xs font-medium text-slate-500">/ Session</span></span>
+            {/* UPDATED CURRENCY TO PKR HERE */}
+            <span className="text-base font-black text-slate-800">PKR 2,500 <span className="text-xs font-medium text-slate-500">/ Session</span></span>
           </div>
           <button type="button" onClick={onBookAppointment} className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-6 h-11 rounded-xl shadow-md shadow-blue-500/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
             <ThumbsUp size={14} /> Proceed to Appointment
           </button>
         </div>
-
       </motion.div>
     </div>
   );

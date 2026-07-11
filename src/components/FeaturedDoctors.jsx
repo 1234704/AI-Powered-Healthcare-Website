@@ -1,187 +1,110 @@
-import React from 'react';
-import Doctor1 from '../assets/Doctor1.png';
-import Doctor2 from '../assets/Doctor2.webp';
-import Doctor3 from '../assets/Doctor3.webp';
-import Doctor4 from '../assets/Doctor4.webp';
+import React, { useState } from 'react';
+import DoctorDetailsModal from './DoctorDetailsModal';
 
+// Sample data (Replace this with your actual data if it's imported from elsewhere)
 const doctors = [
   {
     id: 1,
     name: "Dr. Usman Malik",
     specialization: "Cardiologist",
+    qualification: "MBBS, FCPS (Cardiology)",
     experience: "12 Years",
-    rating: 4.9,
-    image: Doctor1, 
-    description: "Expert in heart diseases with 12+ years of experience"
+    rating: "4.9",
+    location: "Islamabad Diagnostic Center",
+    image: "https://randomuser.me/api/portraits/men/32.jpg"
   },
   {
     id: 2,
     name: "Dr. Ali Khan",
     specialization: "Neurologist",
+    qualification: "MBBS, MD (Neurology)",
     experience: "10 Years",
-    rating: 4.8,
-    image: Doctor2,
-    description: "Specialist in brain and nervous system disorders"
+    rating: "4.8",
+    location: "Shifa International Hospital",
+    image: "https://randomuser.me/api/portraits/men/44.jpg"
   },
   {
     id: 3,
     name: "Dr. Fatima Noor",
     specialization: "Pediatrician",
+    qualification: "MBBS, DCH",
     experience: "8 Years",
-    rating: 4.9,
-    image: Doctor3,
-    description: "Caring for children with love and expertise"
+    rating: "4.9",
+    location: "PIMS Hospital",
+    image: "https://randomuser.me/api/portraits/women/44.jpg"
   },
   {
     id: 4,
     name: "Dr. Sara Ali",
     specialization: "Orthopedic Surgeon",
+    qualification: "MBBS, MS (Ortho)",
     experience: "15 Years",
-    rating: 4.7,
-    image: Doctor4,
-    description: "Expert in bone and joint surgeries"
+    rating: "4.7",
+    location: "Kulsum International Hospital",
+    image: "https://randomuser.me/api/portraits/women/68.jpg"
   }
 ];
 
-const FeaturedDoctors = () => {
+export default function FeaturedDoctors() {
+  // State to track which doctor is selected. If null, the modal is hidden.
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+
   return (
-    <section style={{
-      padding: '60px 80px',
-      backgroundColor: '#f8f9fa'
-    }}>
-      {/* Section Heading */}
-      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <h2 style={{
-          fontSize: '36px',
-          fontWeight: 'bold',
-          color: '#1a237e',
-          marginBottom: '10px'
-        }}>
+    <div className="py-12 px-4 max-w-7xl mx-auto">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-bold text-blue-900 mb-2 flex items-center justify-center gap-2">
           👨‍⚕️ Featured Doctors
         </h2>
-        <p style={{
-          fontSize: '18px',
-          color: '#666',
-          maxWidth: '600px',
-          margin: '0 auto'
-        }}>
-          Meet our experienced and highly qualified medical professionals
-        </p>
+        <p className="text-gray-600">Meet our experienced and highly qualified medical professionals</p>
       </div>
 
-      {/* Doctors Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '30px',
-        maxWidth: '1200px',
-        margin: '0 auto'
-      }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {doctors.map((doctor) => (
-          <div
-            key={doctor.id}
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '15px',
-              padding: '25px',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-              textAlign: 'center',
-              transition: 'all 0.3s ease',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
-            }}
-          >
-            {/* Doctor Image */}
-            <div style={{
-              width: '120px',
-              height: '120px',
-              borderRadius: '50%',
-              backgroundColor: '#eaf5e7',
-              margin: '0 auto 15px',
-              overflow: 'hidden',
-              border: '3px solid #007bff'
-            }}>
-              <img 
-                src={doctor.image}  // ← Ab imported image use hogi
-                alt={doctor.name} 
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover'
-                }}
-              />
+          <div key={doctor.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+            
+            <div className="w-24 h-24 rounded-full border-4 border-blue-100 overflow-hidden mb-4">
+              <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
+            </div>
+            
+            <h3 className="text-lg font-bold text-blue-900">{doctor.name}</h3>
+            <p className="text-blue-600 font-medium text-sm mb-2">{doctor.specialization}</p>
+            
+            <div className="text-gray-500 text-xs mb-3 space-y-1">
+              <p>⏱ {doctor.experience} Experience</p>
+              <p className="text-amber-500 font-bold">⭐ {doctor.rating} / 5.0</p>
             </div>
 
-            {/* Doctor Name */}
-            <h3 style={{
-              fontSize: '20px',
-              fontWeight: 'bold',
-              color: '#1a237e',
-              marginBottom: '5px'
-            }}>
-              {doctor.name}
-            </h3>
-
-            {/* Specialization */}
-            <p style={{
-              color: '#007bff',
-              fontSize: '14px',
-              fontWeight: '600',
-              marginBottom: '8px'
-            }}>
-              {doctor.specialization}
-            </p>
-
-            {/* Experience */}
-            <p style={{
-              color: '#666',
-              fontSize: '13px',
-              marginBottom: '8px'
-            }}>
-              ⏱️ {doctor.experience} Experience
-            </p>
-
-            {/* Rating */}
-            <p style={{
-              color: '#ffc107',
-              fontSize: '14px',
-              marginBottom: '15px'
-            }}>
-              ⭐ {doctor.rating} / 5.0
-            </p>
-
-            {/* View Profile Button */}
-            <button style={{
-              padding: '8px 25px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '25px',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#0056b3';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = '#007bff';
-            }}>
+            {/* THE FIX: We added onClick={...} to this button */}
+            <button 
+              onClick={() => setSelectedDoctor(doctor)}
+              className="mt-auto bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition-colors"
+            >
               View Profile →
             </button>
           </div>
         ))}
       </div>
-    </section>
-  );
-};
 
-export default FeaturedDoctors;
+     {/* Render the Modal ONLY if a doctor is selected */}
+      {selectedDoctor && (
+        <DoctorDetailsModal 
+          doctor={selectedDoctor} 
+          onClose={() => setSelectedDoctor(null)}
+          onBookAppointment={() => {
+            // 1. Close the doctor profile modal
+            setSelectedDoctor(null); 
+            
+            // 2. Find the Appointment UI button, scroll to it, and click it!
+            setTimeout(() => {
+              const bookBtn = document.getElementById('main-book-btn');
+              if (bookBtn) {
+                bookBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => bookBtn.click(), 400); // Wait for scroll to finish, then click
+              }
+            }, 100);
+          }}
+        />
+      )}
+    </div>
+  );
+}

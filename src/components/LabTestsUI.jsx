@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FlaskConical, ArrowRight, CheckCircle, Activity, HeartPulse, Dna, Droplets, ShieldPlus, Search, SlidersHorizontal, User, Phone, CalendarDays, MapPin, ArrowLeft } from 'lucide-react';
 
 const LabTestsUI = () => {
-  const [viewState, setViewState] = useState('grid'); // 'grid', 'form', 'success'
+  const [viewState, setViewState] = useState('grid');
   const [selectedTest, setSelectedTest] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
@@ -17,12 +17,12 @@ const LabTestsUI = () => {
   });
 
   const labTests = [
-    { id: 1, name: 'Complete Blood Count (CBC)', category: 'Hematology', price: '$25.00', turnaround: '24 Hours', icon: <Droplets size={24} className="text-red-500" /> },
-    { id: 2, name: 'Lipid Panel Profile', category: 'Cardiology', price: '$45.00', turnaround: '24 Hours', icon: <HeartPulse size={24} className="text-rose-500" /> },
-    { id: 3, name: 'Comprehensive Metabolic Panel', category: 'General Health', price: '$60.00', turnaround: '48 Hours', icon: <Activity size={24} className="text-blue-500" /> },
-    { id: 4, name: 'Thyroid Function (TSH)', category: 'Endocrinology', price: '$40.00', turnaround: '24 Hours', icon: <ShieldPlus size={24} className="text-indigo-500" /> },
-    { id: 5, name: 'Genetic Risk Screening', category: 'Genetics', price: '$199.00', turnaround: '7-10 Days', icon: <Dna size={24} className="text-purple-500" /> },
-    { id: 6, name: 'Vitamin D Deficiency Test', category: 'Wellness', price: '$35.00', turnaround: '48 Hours', icon: <FlaskConical size={24} className="text-amber-500" /> }
+    { id: 1, name: 'Complete Blood Count (CBC)', category: 'Hematology', price: 'PKR 2,500', turnaround: '24 Hours', icon: <Droplets size={24} className="text-red-500" /> },
+    { id: 2, name: 'Lipid Panel Profile', category: 'Cardiology', price: 'PKR 4,500', turnaround: '24 Hours', icon: <HeartPulse size={24} className="text-rose-500" /> },
+    { id: 3, name: 'Comprehensive Metabolic Panel', category: 'General Health', price: 'PKR 6,000', turnaround: '48 Hours', icon: <Activity size={24} className="text-blue-500" /> },
+    { id: 4, name: 'Thyroid Function (TSH)', category: 'Endocrinology', price: 'PKR 4,000', turnaround: '24 Hours', icon: <ShieldPlus size={24} className="text-indigo-500" /> },
+    { id: 5, name: 'Genetic Risk Screening', category: 'Genetics', price: 'PKR 19,900', turnaround: '7-10 Days', icon: <Dna size={24} className="text-purple-500" /> },
+    { id: 6, name: 'Vitamin D Deficiency Test', category: 'Wellness', price: 'PKR 3,500', turnaround: '48 Hours', icon: <FlaskConical size={24} className="text-amber-500" /> }
   ];
 
   const categories = ['All', ...new Set(labTests.map(test => test.category))];

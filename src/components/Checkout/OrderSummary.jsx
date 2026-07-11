@@ -16,7 +16,7 @@ const OrderSummary = ({ cartItems }) => {
           cartItems.map((item, index) => (
             <div key={index} className="flex justify-between items-center">
               <span className="text-slate-700 font-medium">{item.name}</span>
-              <span className="text-slate-900 font-semibold">${item.price.toFixed(2)}</span>
+              <span className="text-slate-900 font-semibold">PKR {item.price.toFixed(2)}</span>
             </div>
           ))
         )}

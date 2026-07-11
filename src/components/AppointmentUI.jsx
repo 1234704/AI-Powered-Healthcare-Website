@@ -1,198 +1,146 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, User, Phone, CheckCircle, Activity, X } from 'lucide-react';
+import { useState } from 'react';
 
-const AppointmentUI = ({ doctor, onClose, onAppointmentConfirm }) => {
-  const [step, setStep] = useState(1);
+export default function AppointmentUI() {
+  const [showModal, setShowModal] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
-    patientName: '',
+    name: '', 
     phone: '',
-    date: '',
-    timeSlot: '',
-    reason: ''
+    date: '2026-07-11',
+    time: '09:00 AM'
   });
 
-  const timeSlots = ['09:00 AM', '10:30 AM', '11:00 AM', '02:00 PM', '03:30 PM', '05:00 PM'];
-
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSlotSelect = (slot) => {
-    setFormData({ ...formData, timeSlot: slot });
+  // This single function handles closing the modal and resetting the form state
+  const handleClose = () => {
+    setShowModal(false);
+    // Add a slight delay before resetting so the user doesn't see the form flash while closing
+    setTimeout(() => setIsSubmitted(false), 300); 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Send the data back to App.jsx to update the global dashboard
-    if (onAppointmentConfirm) {
-      onAppointmentConfirm({
-        ...formData,
-        doctorName: doctor?.name || 'General Booking'
-      });
-    }
-    
-    setStep(2);
+    setIsSubmitted(true);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm overflow-y-auto font-sans">
-      <div className="w-full max-w-3xl mx-auto relative my-auto">
-        
-        {/* Modal Close Button */}
-        <button 
-          onClick={onClose}
-          className="absolute -top-12 right-0 md:-right-12 p-2 text-white/70 hover:text-white transition-colors cursor-pointer"
-        >
-          <X size={28} />
-        </button>
-
-        <AnimatePresence mode="wait">
-          {step === 1 ? (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-100"
-            >
-              {/* Dynamic Header */}
-              <div className="text-center pt-10 pb-6 px-8 bg-slate-50 border-b border-slate-100">
-                <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-4 text-blue-600 shadow-inner">
-                  <Activity size={28} />
-                </div>
-                <h1 className="text-3xl font-bold text-slate-900">Book an Appointment</h1>
-                {doctor ? (
-                  <p className="mt-2 text-slate-600">Scheduling a visit with <span className="font-semibold text-blue-600">{doctor.name}</span></p>
-                ) : (
-                  <p className="mt-2 text-slate-600">Schedule your visit with our healthcare professionals.</p>
-                )}
-              </div>
-
-              <form onSubmit={handleSubmit} className="p-8">
-                
-                {/* Patient Details Form */}
-                <div className="mb-8">
-                  <h2 className="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Patient Details</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="text" 
-                          name="patientName"
-                          required
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          placeholder="John Doe"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="tel" 
-                          name="phone"
-                          required
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          placeholder="+1 (555) 000-0000"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Date Picker & Time Slots */}
-                <div className="mb-8">
-                  <h2 className="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Schedule</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Select Date</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input 
-                          type="date" 
-                          name="date"
-                          required
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors cursor-pointer"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6">
-                    <label className="block text-sm font-medium text-slate-700 mb-3">Available Time Slots</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {timeSlots.map((slot) => (
-                        <button
-                          type="button"
-                          key={slot}
-                          onClick={() => handleSlotSelect(slot)}
-                          className={`py-2.5 px-4 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
-                            formData.timeSlot === slot 
-                              ? 'bg-blue-600 text-white shadow-md shadow-blue-200/50' 
-                              : 'bg-slate-50 text-slate-600 border border-slate-200 hover:border-blue-300 hover:bg-blue-50'
-                          }`}
-                        >
-                          <Clock size={16} />
-                          {slot}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Submit Button with Hover Effects */}
-                <motion.button
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  disabled={!formData.timeSlot}
-                  className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg font-semibold shadow-lg shadow-blue-200 transition-colors cursor-pointer"
-                >
-                  Confirm Appointment
-                </motion.button>
-              </form>
-            </motion.div>
-          ) : (
-            /* Confirmation Message Module */
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl shadow-2xl p-10 text-center border border-slate-100 max-w-md mx-auto"
-            >
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                className="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner"
-              >
-                <CheckCircle size={40} />
-              </motion.div>
-              <h2 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Booking Confirmed!</h2>
-              <p className="text-slate-600 mb-8 leading-relaxed">
-                Thank you, <span className="font-semibold text-slate-800">{formData.patientName}</span>. Your appointment {doctor && `with ${doctor.name}`} is scheduled for <span className="font-semibold text-blue-600">{formData.date}</span> at <span className="font-semibold text-blue-600">{formData.timeSlot}</span>.
-              </p>
-              <button 
-                onClick={onClose}
-                className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold shadow-md transition-colors cursor-pointer"
-              >
-                Return to Dashboard
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+    <div className="flex flex-col items-center justify-center p-8 mt-8 bg-white border border-gray-200 rounded-lg shadow-sm mx-4">
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold text-blue-900 mb-2">Book an Appointment</h2>
+        <p className="text-gray-600">Schedule your visit with our healthcare professionals.</p>
       </div>
+      
+      <button 
+        id="main-book-btn" /* Added ID here */
+        onClick={() => setShowModal(true)}
+        className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors shadow-md"
+      >
+        Book Now
+      </button>
+
+      {/* Modal Overlay Background */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          
+          {/* Main Modal Container - The 'relative' class here is what fixes your close button! */}
+          <div className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            
+            {/* THE FIXED CLOSE BUTTON */}
+            <button 
+              onClick={handleClose} 
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors z-50"
+              aria-label="Close modal"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Conditional Rendering: Form vs Success Screen */}
+            {!isSubmitted ? (
+              <div className="p-8">
+                <div className="flex flex-col items-center mb-8">
+                  <div className="bg-blue-50 p-3 rounded-full mb-4">
+                    <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900">Book an Appointment</h3>
+                  <p className="text-gray-500 mt-1">Schedule your visit with our healthcare professionals.</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Patient Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                          </div>
+                          <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="pl-10 w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="John Doe" required />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                          </div>
+                          <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="pl-10 w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="+1 (555) 000-0000" required />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Schedule</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Select Date</label>
+                        <input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-600" required />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Available Time Slots</label>
+                        <select value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                          <option>09:00 AM</option>
+                          <option>10:30 AM</option>
+                          <option>01:00 PM</option>
+                          <option>03:30 PM</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button type="submit" className="w-full bg-blue-900 text-white p-4 rounded-lg font-semibold hover:bg-blue-800 transition-colors mt-4">
+                    Confirm Appointment
+                  </button>
+                </form>
+              </div>
+            ) : (
+              // Success Screen (Screenshot 2)
+              <div className="p-12 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                  <svg className="w-10 h-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-3xl font-extrabold text-gray-900 mb-4">Booking Confirmed!</h3>
+                <p className="text-gray-600 text-lg mb-8 max-w-sm">
+                  Thank you, <strong className="text-gray-900">{formData.name || 'shahryar'}</strong>. Your appointment is scheduled for <strong className="text-blue-600">{formData.date}</strong> at <strong className="text-blue-600">{formData.time}</strong>.
+                </p>
+                
+                {/* The "Return to Dashboard" button acts as a secondary close button */}
+                <button 
+                  onClick={handleClose}
+                  className="w-full max-w-xs bg-gray-900 text-white p-4 rounded-xl font-semibold hover:bg-gray-800 transition-colors shadow-lg"
+                >
+                  Return to Dashboard
+                </button>
+              </div>
+            )}
+            
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default AppointmentUI;
+}

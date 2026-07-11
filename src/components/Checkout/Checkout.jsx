@@ -6,30 +6,25 @@ import Billing from './Billing';
 import Payment from './Payment';
 
 const Checkout = () => {
-  // Day 1: State Management
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '', address: '' });
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentDetails, setPaymentDetails] = useState({});
   
-  // Day 5 & 7: Validation and Error State
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const [apiStatus, setApiStatus] = useState({ loading: false, error: null, success: false });
 
-  // Mock Cart Data
   const cartItems = [
-    { name: 'Doctor Appointment', price: 30.00 },
-    { name: 'Medicine', price: 20.00 },
-    { name: 'Lab Test', price: 50.00 }
+    { name: 'Doctor Appointment', price: 2500.00 },
+    { name: 'Medicine', price: 1500.00 },
+    { name: 'Lab Test', price: 4500.00 }
   ];
 
-  // Day 2: Billing Calculations
   const subtotal = cartItems.reduce((acc, item) => acc + item.price, 0);
   const tax = subtotal * 0.10;
-  const deliveryFee = 5.00;
+  const deliveryFee = 250.00;
   const total = subtotal + tax + deliveryFee;
 
-  // Day 5: Real-time Validation Engine
   useEffect(() => {
     const validate = () => {
       const newErrors = {};
@@ -58,7 +53,6 @@ const Checkout = () => {
     setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value });
   };
 
-  // Day 7: Error Handling & Form Submission
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (!isFormValid || cartItems.length === 0) {
@@ -68,7 +62,6 @@ const Checkout = () => {
 
     setApiStatus({ loading: true, error: null, success: false });
 
-    // Simulating Backend API Integration latency and random error handling
     setTimeout(() => {
       const randomOutcome = Math.random();
       if (randomOutcome > 0.8) {
@@ -98,7 +91,6 @@ const Checkout = () => {
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-slate-900 text-center mb-10">Checkout</h1>
 
-        {/* Day 7: Global Error Message UI */}
         <AnimatePresence>
           {apiStatus.error && (
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-700">
@@ -108,10 +100,7 @@ const Checkout = () => {
           )}
         </AnimatePresence>
 
-        {/* Day 6: Responsive Grid Design (1 col mobile, 2 col desktop) */}
         <div className="flex flex-col lg:flex-row gap-8">
-          
-          {/* Left Column: Form & Payment */}
           <div className="flex-1 space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
               <h2 className="text-lg font-bold text-slate-900 mb-4 border-b pb-4">Customer Information</h2>
@@ -163,7 +152,6 @@ const Checkout = () => {
             {errors.payment && <p className="text-sm text-red-500 font-medium -mt-4">{errors.payment}</p>}
           </div>
 
-          {/* Right Column: Order Summary, Billing, and Submit */}
           <div className="lg:w-[400px]">
             <div className="sticky top-24">
               <OrderSummary cartItems={cartItems} />
@@ -182,7 +170,6 @@ const Checkout = () => {
               </button>
             </div>
           </div>
-
         </div>
       </div>
     </div>

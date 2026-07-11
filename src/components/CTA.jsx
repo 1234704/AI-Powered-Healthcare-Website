@@ -1,113 +1,55 @@
 import React from 'react';
 
-const CTA = () => {
+export default function CTA() {
   return (
-    <section style={{
-      padding: '80px 80px',
-      textAlign: 'center',
-      backgroundColor: '#f8f9fa'
-    }}>
-      <div style={{
-        maxWidth: '800px',
-        margin: '0 auto'
-      }}>
-        {/* Heading */}
-        <h2 style={{
-          fontSize: '42px',
-          fontWeight: 'bold',
-          marginBottom: '15px',
-          color: '#1a237e', 
-          animation: 'fadeIn 1s ease-in-out'
-        }}>
+    <section className="py-20 px-4 text-center bg-white">
+      <div className="max-w-3xl mx-auto">
+        
+        {/* Navigation Dots (Matching your screenshot) */}
+        <div className="flex justify-center gap-2 mb-12">
+          <div className="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+        </div>
+
+        <h2 className="text-4xl font-bold text-blue-900 mb-6">
           Ready to Take Care of Your Health?
         </h2>
-
-        {/* Sub-heading */}
-        <p style={{
-          fontSize: '18px',
-          color: '#333', 
-          marginBottom: '35px',
-          lineHeight: '1.8'
-        }}>
-          Join thousands of satisfied patients who trust our platform 
-          for their healthcare needs. Book your appointment today!
+        
+        <p className="text-lg text-gray-600 mb-10 leading-relaxed max-w-2xl mx-auto">
+          Join thousands of satisfied patients who trust our platform for their healthcare needs. Book your
+          appointment today!
         </p>
-
-        {/* Buttons */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '20px',
-          flexWrap: 'wrap'
-        }}>
-          {/* Primary Button - Book Appointment */}
-          <button
-            style={{
-              padding: '15px 40px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '50px',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 15px rgba(0,123,255,0.3)'
+        
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-10">
+          
+          {/* THE FIXED BOOK APPOINTMENT BUTTON */}
+          <button 
+            onClick={() => {
+              const bookBtn = document.getElementById('main-book-btn');
+              if (bookBtn) {
+                bookBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => bookBtn.click(), 400);
+              }
             }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#0056b3';
-              e.target.style.transform = 'translateY(-3px)';
-              e.target.style.boxShadow = '0 8px 25px rgba(0,123,255,0.5)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = '#007bff';
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 15px rgba(0,123,255,0.3)';
-            }}
+            className="bg-blue-600 text-white px-8 py-3.5 rounded-full font-bold hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-lg shadow-blue-600/30 w-full sm:w-auto justify-center text-lg"
           >
             📅 Book Appointment
           </button>
-
-          {/* Secondary Button - Contact Us */}
-          <button
-            style={{
-              padding: '15px 40px',
-              backgroundColor: 'transparent',
-              color: '#007bff', 
-              border: '2px solid #007bff', 
-              borderRadius: '50px',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#007bff';
-              e.target.style.color = 'white';
-              e.target.style.transform = 'translateY(-3px)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-              e.target.style.color = '#007bff';
-              e.target.style.transform = 'translateY(0)';
-            }}
-          >
+          
+          {/* Contact Us Button */}
+          <button className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-3.5 rounded-full font-bold hover:bg-blue-50 transition-colors flex items-center gap-2 w-full sm:w-auto justify-center text-lg">
             📞 Contact Us
           </button>
-        </div>
 
-        {/* Small Text */}
-        <p style={{
-          fontSize: '14px',
-          color: '#666', 
-          marginTop: '30px',
-          opacity: '0.8'
-        }}>
+        </div>
+        
+        <div className="text-sm text-gray-500 font-medium flex items-center justify-center gap-2">
           ⏰ 24/7 Support Available • Free Consultation • Secure & Confidential
-        </p>
+        </div>
+        
       </div>
     </section>
   );
-};
-
-export default CTA;
+}

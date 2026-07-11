@@ -28,7 +28,6 @@ export default function MedicineStore() {
     return matchCategory && matchSearch;
   });
 
-  // Add to cart
   const addToCart = (med, e) => {
     e?.stopPropagation();
     setCart((prev) => {
@@ -40,14 +39,12 @@ export default function MedicineStore() {
     setTimeout(() => setAddedId(null), 1200);
   };
 
-  // Update quantity — Day 6
   const updateQty = (id, delta) => {
     setCart((prev) =>
       prev.map((i) => i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i)
     );
   };
 
-  // Remove item — Day 7
   const removeItem = (id) => {
     setRemovedId(id);
     setTimeout(() => {
@@ -56,7 +53,6 @@ export default function MedicineStore() {
     }, 350);
   };
 
-  // Clear cart
   const clearCart = () => setCart([]);
 
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
@@ -67,15 +63,12 @@ export default function MedicineStore() {
       <style>{css}</style>
 
       <div style={styles.container}>
-
-        {/* Header */}
         <div style={styles.header}>
           <span style={styles.badge}>💊 Medicine Store</span>
           <h2 style={styles.title}>Order Medicines Online</h2>
           <p style={styles.subtitle}>Genuine medicines delivered to your doorstep.</p>
         </div>
 
-        {/* Search + Cart Row */}
         <div style={styles.topRow}>
           <div style={styles.searchBar}>
             <span>🔍</span>
@@ -89,7 +82,6 @@ export default function MedicineStore() {
           </button>
         </div>
 
-        {/* Categories */}
         <div style={styles.categoryRow}>
           {categories.map((cat) => (
             <button key={cat} onClick={() => setActiveCategory(cat)}
@@ -99,7 +91,6 @@ export default function MedicineStore() {
           ))}
         </div>
 
-        {/* Grid */}
         <div style={styles.grid}>
           {filteredMedicines.map((med) => (
             <div key={med.id} className="medicine-card" style={styles.card} onClick={() => setSelectedMedicine(med)}>
@@ -114,7 +105,7 @@ export default function MedicineStore() {
                 <h3 style={styles.cardName}>{med.name}</h3>
                 <p style={styles.cardUnit}>{med.unit} • {med.brand}</p>
                 <div style={styles.cardFooter}>
-                  <span style={styles.cardPrice}>Rs. {med.price}</span>
+                  <span style={styles.cardPrice}>PKR {med.price}</span>
                   <button
                     style={{ ...styles.addBtn, ...(addedId === med.id ? styles.addBtnSuccess : {}) }}
                     onClick={(e) => addToCart(med, e)}
@@ -130,7 +121,6 @@ export default function MedicineStore() {
         {filteredMedicines.length === 0 && <p style={styles.emptyText}>No medicines found.</p>}
       </div>
 
-      {/* Medicine Detail Modal */}
       {selectedMedicine && (
         <div style={styles.modalOverlay} onClick={() => setSelectedMedicine(null)}>
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -156,7 +146,7 @@ export default function MedicineStore() {
             <div style={styles.modalFooter}>
               <div>
                 <p style={styles.modalPriceLabel}>Price</p>
-                <p style={styles.modalPrice}>Rs. {selectedMedicine.price}</p>
+                <p style={styles.modalPrice}>PKR {selectedMedicine.price}</p>
               </div>
               <button
                 style={{ ...styles.addCartBtn, ...(addedId === selectedMedicine.id ? styles.addBtnSuccess : {}) }}
@@ -169,7 +159,6 @@ export default function MedicineStore() {
         </div>
       )}
 
-      {/* Cart Sidebar */}
       {showCart && (
         <div style={styles.modalOverlay} onClick={() => setShowCart(false)}>
           <div style={styles.cartSidebar} onClick={(e) => e.stopPropagation()}>
@@ -185,7 +174,6 @@ export default function MedicineStore() {
               </div>
             ) : (
               <>
-                {/* Clear all button */}
                 <button style={styles.clearAllBtn} onClick={clearCart}>🗑️ Clear All</button>
 
                 <div style={styles.cartItems}>
@@ -203,16 +191,14 @@ export default function MedicineStore() {
                       <div style={styles.cartItemInfo}>
                         <p style={styles.cartItemName}>{item.name}</p>
                         <p style={styles.cartItemUnit}>{item.unit}</p>
-                        <p style={styles.cartItemPrice}>Rs. {item.price * item.qty}</p>
+                        <p style={styles.cartItemPrice}>PKR {item.price * item.qty}</p>
                       </div>
                       <div style={styles.cartItemRight}>
-                        {/* Quantity Controls — Day 6 */}
                         <div style={styles.qtyControls}>
                           <button style={styles.qtyBtn} onClick={() => updateQty(item.id, -1)}>−</button>
                           <span style={styles.qtyNum}>{item.qty}</span>
                           <button style={styles.qtyBtn} onClick={() => updateQty(item.id, 1)}>+</button>
                         </div>
-                        {/* Remove Button — Day 7 */}
                         <button style={styles.removeBtn} onClick={() => removeItem(item.id)}>
                           🗑️ Remove
                         </button>
@@ -224,7 +210,7 @@ export default function MedicineStore() {
                 <div style={styles.cartFooter}>
                   <div style={styles.cartTotal}>
                     <span>Total ({cartCount} items)</span>
-                    <span style={styles.cartTotalAmount}>Rs. {cartTotal}</span>
+                    <span style={styles.cartTotalAmount}>PKR {cartTotal}</span>
                   </div>
                   <button style={styles.checkoutBtn}>Proceed to Checkout →</button>
                 </div>
@@ -268,7 +254,6 @@ const styles = {
   addBtn: { background: "#0D9488", color: "white", border: "none", borderRadius: "8px", padding: "8px 14px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer", transition: "all 0.2s" },
   addBtnSuccess: { background: "#38A169" },
   emptyText: { textAlign: "center", color: "#A0AEC0", marginTop: "40px" },
-  // Modal
   modalOverlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
   modal: { background: "white", borderRadius: "24px", padding: "36px", maxWidth: "560px", width: "100%", position: "relative", maxHeight: "90vh", overflowY: "auto" },
   closeBtn: { position: "absolute", top: "16px", right: "16px", background: "#F7FAFC", border: "none", borderRadius: "50%", width: "36px", height: "36px", cursor: "pointer", fontSize: "1rem", color: "#4A5568" },
@@ -290,7 +275,6 @@ const styles = {
   modalPriceLabel: { fontSize: "0.75rem", color: "#A0AEC0", fontWeight: "600" },
   modalPrice: { fontSize: "1.6rem", fontWeight: "800", color: "#1A202C" },
   addCartBtn: { background: "#0D9488", color: "white", border: "none", borderRadius: "12px", padding: "14px 28px", fontSize: "0.95rem", fontWeight: "700", cursor: "pointer", transition: "all 0.2s" },
-  // Cart
   cartSidebar: { background: "white", borderRadius: "24px", padding: "28px", maxWidth: "440px", width: "100%", maxHeight: "90vh", overflowY: "auto", position: "relative" },
   cartHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" },
   cartTitle: { fontSize: "1.2rem", fontWeight: "800", color: "#1A202C" },
