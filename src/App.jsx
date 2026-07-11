@@ -1,26 +1,13 @@
-<<<<<<< HEAD
-import React from 'react';
-import Home from './components/Home';
-import AppointmentUI from './components/AppointmentUI';
-import MedicineStore from './components/MedicineStore';
-
-function App() {
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="App"></div>
-        <Home />
-      <AppointmentUI />
-      <MedicineStore />
-    </div>
-  );
-}
-=======
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Users, ShieldCheck, Clock, Bell, User, ChevronDown } from 'lucide-react';
+
+// Team Components
+import Home from './components/Home';
+import MedicineStore from './components/MedicineStore';
 import DoctorCard from './components/DoctorCard';
-import AppointmentUI from './components/AppointmentUI'; 
-import DoctorDetailsModal from './components/DoctorDetailsModal'; 
+import AppointmentUI from './components/AppointmentUI';
+import DoctorDetailsModal from './components/DoctorDetailsModal';
 
 const mockDoctors = [
   {
@@ -175,9 +162,7 @@ const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.07 
-    }
+    transition: { staggerChildren: 0.07 }
   }
 };
 
@@ -186,8 +171,6 @@ const App = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedDoctor, setSelectedDoctor] = useState(null); 
   const [isBookingOpen, setIsBookingOpen] = useState(false); 
-  
-  // Day 7: Central in-memory registry for local state management
   const [appointments, setAppointments] = useState([]);
 
   const handleAddAppointment = (newAppointment) => {
@@ -201,7 +184,6 @@ const App = () => {
       doctor.qualification.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesCategory = selectedCategory === "All" || doctor.specialization === selectedCategory;
-
     return matchesSearch && matchesCategory;
   });
 
@@ -213,7 +195,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] font-sans antialiased selection:bg-blue-600 selection:text-white overflow-x-hidden">
       
-      
+      {/* Navigation */}
       <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black tracking-wider text-sm shadow-md shadow-blue-500/20">
@@ -239,10 +221,11 @@ const App = () => {
         </div>
       </nav>
 
+      {/* Zainab's Home Component */}
+      <Home />
      
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        
-       
+      {/* Provider Directory Section */}
+      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 border-b border-slate-200/80">
         <motion.div initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
@@ -256,7 +239,6 @@ const App = () => {
           </div>
         </motion.div>
 
-       
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center gap-4">
             <div className="p-3 bg-blue-50 text-blue-600 rounded-xl"><Users size={20} /></div>
@@ -283,10 +265,8 @@ const App = () => {
           </div>
         </div>
 
-        
         <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
-          
-          
+          {/* Sidebar Filters */}
           <aside className="w-full lg:w-64 lg:min-w-64 lg:max-w-64 bg-white p-5 rounded-2xl shadow-xs border border-slate-200/60 lg:sticky lg:top-24 z-10 flex-shrink-0">
             <div className="flex items-center justify-between text-slate-800 mb-4 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
@@ -301,7 +281,6 @@ const App = () => {
             </div>
             
             <div className="space-y-5">
-             
               <div className="relative">
                 <Search size={15} className="absolute left-3.5 top-3.5 text-slate-400" />
                 <input
@@ -313,7 +292,6 @@ const App = () => {
                 />
               </div>
 
-         
               <div>
                 <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2.5">Filter by Specialty</label>
                 <div className="space-y-1 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
@@ -323,17 +301,12 @@ const App = () => {
                       type="button"
                       onClick={() => setSelectedCategory(cat)}
                       className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer relative overflow-hidden ${
-                        selectedCategory === cat
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-transparent text-slate-600 hover:bg-slate-50'
+                        selectedCategory === cat ? 'bg-blue-600 text-white shadow-sm' : 'bg-transparent text-slate-600 hover:bg-slate-50'
                       }`}
                     >
                       <span className="relative z-10">{cat}</span>
                       {selectedCategory === cat && (
-                        <motion.span 
-                          layoutId="activeIndicator"
-                          className="w-1.5 h-1.5 bg-white rounded-full relative z-10" 
-                        />
+                        <motion.span layoutId="activeIndicator" className="w-1.5 h-1.5 bg-white rounded-full relative z-10" />
                       )}
                     </button>
                   ))}
@@ -342,7 +315,7 @@ const App = () => {
             </div>
           </aside>
 
-        
+          {/* Doctor Grid */}
           <main className="flex-1 w-full min-w-0" style={{ perspective: "1200px" }}>
             <motion.div 
               layout
@@ -356,10 +329,7 @@ const App = () => {
                 {filteredDoctors.map((doctor) => (
                   <div
                     key={doctor.id}
-                    onClick={() => {
-                      setSelectedDoctor(doctor);
-                      setIsBookingOpen(false); 
-                    }}
+                    onClick={() => { setSelectedDoctor(doctor); setIsBookingOpen(false); }}
                     className="h-full cursor-pointer"
                   >
                     <DoctorCard doc={doctor} />
@@ -368,7 +338,6 @@ const App = () => {
               </AnimatePresence>
             </motion.div>
 
-            
             <AnimatePresence>
               {filteredDoctors.length === 0 && (
                 <motion.div 
@@ -387,11 +356,13 @@ const App = () => {
               )}
             </AnimatePresence>
           </main>
-
         </div>
       </div>
 
-      
+      {/* Ahmed's Medicine Store Component */}
+      <MedicineStore />
+
+      {/* Doctor Modals */}
       <AnimatePresence>
         {selectedDoctor && !isBookingOpen && (
           <DoctorDetailsModal 
@@ -402,15 +373,11 @@ const App = () => {
         )}
       </AnimatePresence>
 
-      
       <AnimatePresence>
         {selectedDoctor && isBookingOpen && (
           <AppointmentUI 
             doctor={selectedDoctor} 
-            onClose={() => {
-              setIsBookingOpen(false);
-              setSelectedDoctor(null);
-            }} 
+            onClose={() => { setIsBookingOpen(false); setSelectedDoctor(null); }} 
             onAppointmentConfirm={handleAddAppointment}
           />
         )}
@@ -418,6 +385,5 @@ const App = () => {
     </div>
   );
 };
->>>>>>> origin/feature/doctor-module
 
 export default App;
