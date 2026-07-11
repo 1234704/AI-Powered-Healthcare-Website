@@ -1,290 +1,150 @@
-# AI-Powered Healthcare Website — Backend Architecture
+# 🏥 AI-Powered Healthcare Backend — Documentation
 
-**Stack:** Node.js, Express, MongoDB
-**Pattern:** Feature-Based Modular Architecture (evolved from base MVC)
-**Timeline:** 1 week
+This is the backend server for the AI-Powered Healthcare platform, built with Node.js, Express, and MongoDB Atlas. It follows a Feature-Based Modular Architecture to ensure scalability and clean code separation.
 
----
+## 🚀 1. Tech Stack
 
-## 1. Backend Architectural Approach
+- **Runtime:** Node.js
+- **Framework:** Express.js
+- **Database:** MongoDB Atlas (Mongoose ODM)
+- **Authentication:** JWT (JSON Web Tokens) & BcryptJS
+- **Logging:** Morgan
+- **AI Integration:** Rule-based / Groq API (Symptom Checker)
 
-We use a **Feature-Based Modular Architecture** instead of a flat MVC layout.
+## 📂 2. Project Architecture
 
-**Why:** Since this is a team project, this approach lets different members work on different modules (e.g., Doctors vs. Pharmacy) without constant merge conflicts in shared folders.
-
-Each feature folder is self-contained, with its own model, controller, routes, and service logic.
-
----
-
-## 2. Folder Structure
+The project uses a modular structure. Each feature (module) contains its own model, controller, and routes.
 
 ```
-src/
-├── modules/
-│   ├── auth/
-│   │   ├── auth.controller.js
-│   │   ├── auth.routes.js
-│   │   └── auth.service.js        # Business logic
-│   ├── doctors/
-│   │   ├── doctor.model.js
-│   │   ├── doctor.controller.js
-│   │   └── doctor.routes.js
-│   ├── appointments/
-│   │   ├── appointment.model.js
-│   │   ├── appointment.controller.js
-│   │   └── appointment.routes.js
-│   └── pharmacy/
-│       ├── medicine.model.js
-│       ├── pharmacy.controller.js
-│       └── pharmacy.routes.js
-├── middleware/
-│   ├── auth.middleware.js         # JWT verification
-│   ├── role.middleware.js         # Admin vs Patient vs Doctor
-│   ├── error.middleware.js        # Global error handler
-│   └── upload.middleware.js       # Multer for images
-├── config/
-│   ├── db.js
-│   └── env.js
-├── utils/
-│   ├── apiError.js                # Custom error class
-│   └── apiResponse.js             # Standardized JSON response
-└── app.js
+server/
+├── src/
+│   ├── config/             # Database & Env configurations
+│   ├── middleware/         # Auth, Role-check, & Error handling
+│   ├── utils/              # Standardized API Response utility
+│   └── modules/            # Feature-based folders
+│       ├── auth/           # User registration & login
+│       ├── ai/             # Symptom checker logic
+│       ├── doctors/        # Doctor profiles & search
+│       ├── appointments/   # Booking & slot management
+│       └── pharmacy/       # Medicine & Cart system
+├── server.js               # Entry point
+└── .env                    # Environment variables (Ignored by Git)
 ```
 
----
+## 🛠️ 3. Getting Started
 
-## 3. Database Schema Design (MongoDB / Mongoose)
+### Prerequisites
 
-### 3.1 User Model (Core)
+- Node.js installed
+- A MongoDB Atlas account
 
-```javascript
+### Installation
+
+1. Navigate to the server directory:
+
+```bash
+cd server
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create a `.env` file and fill in your credentials:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_atlas_uri
+JWT_SECRET=your_generated_secret
+NODE_ENV=development
+AI_API_KEY=your_groq_or_ai_key
+```
+
+4. Start the development server:
+
+```bash
+npm run dev
+```
+
+## 📡 4. API Endpoints
+
+### 🔐 Authentication (`/api/auth`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/signup` | Create a new user (Patient/Doctor/Admin) |
+| POST | `/login` | Returns JWT and user details |
+
+### 🤖 AI Symptom Checker (`/api/ai`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/symptom-checker` | Analyzes symptoms and suggests a department |
+
+### 🩺 Doctors (`/api/doctors`)
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET | `/` | Public | List all doctors (Filter by `?search=` or `?specialization=`) |
+| GET | `/:id` | Public | Get detailed doctor profile |
+| POST | `/profile` | Doctor | Create/Update doctor professional profile |
+
+### 📅 Appointments (`/api/appointments`)
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST | `/book` | Patient | Book a slot (Prevents double-booking) |
+| GET | `/my-appointments` | Patient | View patient's history |
+| PATCH | `/manage/:id` | Doctor | Confirm or Cancel an appointment |
+
+### 💊 Pharmacy (`/api/pharmacy`)
+
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET | `/medicines` | Public | Browse all medicines |
+| POST | `/cart` | Patient | Add items to the database-persisted cart |
+| POST | `/checkout` | Patient | Place order and reduce medicine stock |
+
+## 🛡️ 5. Security & Standards
+
+### Standardized Response Format
+
+Every API request returns a consistent JSON structure:
+
+```json
 {
-  name: { type: String, required: true },
-  email: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
-  role: { type: String, enum: ['patient', 'doctor', 'admin'], default: 'patient' },
-  avatar: String,
-  phone: String,
-  address: { street: String, city: String, zip: String },
-  createdAt: { type: Date, default: Date.now }
+  "success": true,
+  "message": "Information string",
+  "timestamp": "ISO Date",
+  "data": { ... }
 }
 ```
 
-### 3.2 Doctor Model (Extended Profile)
+### Authentication Header
 
-```javascript
-{
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
-  specialization: { type: String, required: true },
-  experience: { type: Number, required: true },
-  bio: String,
-  fees: Number,
-  rating: { type: Number, default: 0 },
-  totalReviews: { type: Number, default: 0 },
-  availability: [
-    { day: String, slots: [String] } // e.g., { day: 'Monday', slots: ['09:00', '10:00'] }
-  ],
-  isVerified: { type: Boolean, default: false }
-}
+To access "Protected" routes (Booking, Cart, Checkout), the Frontend must send the JWT in the header:
+
+```
+Authorization: Bearer <YOUR_TOKEN>
 ```
 
-### 3.3 Appointment Model (The Bridge)
+### Error Handling
 
-```javascript
-{
-  patient: { type: Schema.Types.ObjectId, ref: 'User' },
-  doctor: { type: Schema.Types.ObjectId, ref: 'Doctor' },
-  appointmentDate: { type: Date, required: true },
-  timeSlot: { type: String, required: true },
-  status: { type: String, enum: ['pending', 'confirmed', 'cancelled', 'completed'], default: 'pending' },
-  symptoms: String,
-  paymentStatus: { type: String, enum: ['unpaid', 'paid'], default: 'unpaid' }
-}
-```
+A global error middleware catches all crashes and returns a clean 500 Internal Server Error message instead of crashing the process.
 
-### 3.4 Medicine Model
+## 📝 6. Team Collaboration Rules
 
-| Field                | Type    |
-| -------------------- | ------- |
-| name                 | String  |
-| brand                | String  |
-| category             | String  |
-| price                | Number  |
-| stock                | Number  |
-| description          | String  |
-| image                | String  |
-| prescriptionRequired | Boolean |
+- Never push the `.env` file. Use `.env.example` as a template.
+- **Feature Branches:** Create branches like `feature/doctors` or `feature/pharmacy`.
+- **Model Changes:** If you change a Mongoose Schema, notify the team as it affects the Frontend forms.
 
-### 3.5 Lab Test Model
+## ✅ Final Finishing Checklist
 
-| Field       | Type    |
-| ----------- | ------- |
-| testName    | String  |
-| provider    | String  |
-| price       | Number  |
-| homeSample  | Boolean |
-| description | String  |
-
-### 3.6 Blog Model
-
-| Field     | Type   |
-| --------- | ------ |
-| title     | String |
-| content   | String |
-| author    | String |
-| category  | String |
-| thumbnail | String |
-| createdAt | Date   |
-
----
-
-## 4. Authentication & Security (JWT)
-
-A **two-layer security system** protects the API:
-
-- **Public Routes** — accessible by anyone (e.g., Home, View Doctors, View Medicines)
-- **Protected Routes (User)** — require a valid JWT in the `Authorization` header (e.g., Book Appointment, View Cart)
-- **Restricted Routes (Admin/Doctor)** — require JWT **+** role check (e.g., Add Medicines, Verify Appointments)
-
-**Logic Flow:**
-
-1. Frontend sends login credentials.
-2. Backend validates credentials and generates a JWT signed with `JWT_SECRET`.
-3. Frontend stores the JWT (localStorage or cookie).
-4. Frontend attaches the JWT to every protected request.
-
-**Libraries:**
-
-- `bcryptjs` — hash passwords before saving
-- `jsonwebtoken` — generate and verify JWTs
-
----
-
-## 5. API Route Mapping
-
-### 5.1 Auth & Profile
-
-| Endpoint             | Method | Access    | Description                |
-| -------------------- | ------ | --------- | -------------------------- |
-| `/api/auth/signup`   | POST   | Public    | Create new account         |
-| `/api/auth/login`    | POST   | Public    | Returns JWT & user details |
-| `/api/users/profile` | GET    | Protected | Get logged-in user details |
-| `/api/users/update`  | PATCH  | Protected | Update profile/avatar      |
-
-### 5.2 Doctors & Search
-
-| Endpoint                  | Method | Access    | Description                                         |
-| ------------------------- | ------ | --------- | --------------------------------------------------- |
-| `/api/doctors`            | GET    | Public    | List all doctors (supports `?search=` and `?dept=`) |
-| `/api/doctors/:id`        | GET    | Public    | Full profile + reviews                              |
-| `/api/doctors/review/:id` | POST   | Protected | Leave a rating/review                               |
-
-### 5.3 Appointments (The Engine)
-
-| Endpoint                       | Method | Access       | Description                    |
-| ------------------------------ | ------ | ------------ | ------------------------------ |
-| `/api/appointments/book`       | POST   | Protected    | Submit appointment form        |
-| `/api/appointments/my-slots`   | GET    | Protected    | Patient views their history    |
-| `/api/appointments/manage/:id` | PATCH  | Doctor/Admin | Change status (confirm/cancel) |
-
-### 5.4 Pharmacy & Lab
-
-| Endpoint               | Method | Access    | Description                    |
-| ---------------------- | ------ | --------- | ------------------------------ |
-| `/api/medicines`       | GET    | Public    | List medicines with pagination |
-| `/api/cart/add`        | POST   | Protected | Add item to DB-persisted cart  |
-| `/api/orders/checkout` | POST   | Protected | Process order & reduce stock   |
-| `/api/labs`            | GET    | Public    | List available lab tests       |
-
-### 5.5 Emergency & AI Helper
-
-| Endpoint                  | Method | Access    | Description                             |
-| ------------------------- | ------ | --------- | --------------------------------------- |
-| `/api/emergency/nearby`   | GET    | Public    | Fetch hospitals based on coordinates    |
-| `/api/ai/symptom-checker` | POST   | Protected | Suggests department based on text input |
-
-### 5.6 Blogs
-
-| Endpoint     | Method | Access | Description                |
-| ------------ | ------ | ------ | -------------------------- |
-| `/api/blogs` | GET    | Public | Fetch health tips/articles |
-
----
-
-## 6. Core Backend Logic
-
-### 6.1 Search & Filter
-
-For Doctors and Medicines, use MongoDB `$regex` for partial matching — e.g., searching "Cardio" should return "Cardiologist".
-
-### 6.2 AI Integration (Bonus / Simulated)
-
-Since the product is "AI-Powered," implement a simple **Symptom Checker** route:
-
-- Use an open-source or hosted LLM API (OpenAI, HuggingFace), **or**
-- Use rule-based logic to map symptoms → suggested doctor specialization
-
-### 6.3 Validation Rules
-
-- No double-booking: verify a doctor's slot is free before saving an appointment
-- Standardize all API responses via `apiResponse.js`
-- Catch all errors centrally via `error.middleware.js` (404, 401, 500)
-
----
-
-## 7. Implementation Plan (Day-by-Day)
-
-| Day | Focus                       | Deliverables                                                |
-| --- | --------------------------- | ----------------------------------------------------------- |
-| 1   | Architecture & Auth         | Server setup, MongoDB connection, Login/Signup APIs         |
-| 2   | Doctor & Appointment Module | Doctor models, appointment CRUD, slot availability logic    |
-| 3   | Pharmacy & Lab Module       | Medicine listing, lab test listing, cart logic              |
-| 4   | Emergency & Blogs           | Static data serving for emergency contacts, blog management |
-| 5   | Integration                 | Connect backend with React frontend (Axios/Fetch)           |
-| 6   | Testing & Polish            | Bug fixes, smooth transitions, responsive design checks     |
-| 7   | Deployment                  | Backend (Render/Vercel), Frontend (Netlify/Vercel)          |
-
----
-
-## 8. Team Task Delegation
-
-| Role                                     | Responsibilities                                            |
-| ---------------------------------------- | ----------------------------------------------------------- |
-| **Backend Lead** (Member A)              | Database schemas, JWT auth, API server setup                |
-| **Frontend – UI/UX** (Member B)          | Home page, navbar, footer, animations, Tailwind/CSS styling |
-| **Module Dev – Medicine/Lab** (Member C) | Medicine store, lab test pages, cart functionality          |
-| **Module Dev – Doctors/Blog** (Member D) | Doctor listing, search filters, blog sections               |
-
-### Component-Level Responsibilities
-
-**Middleware Specialist**
-
-- Build `auth.middleware.js` to decode and verify JWT
-- Build `error.middleware.js` to catch all errors (404, 401, 500) and return clean JSON
-
-**Database Architect**
-
-- Manage Mongoose connections and data validation
-- Enforce rules like preventing double booking for the same time slot
-
-**API Developers**
-
-- Implement controller logic (e.g., in `appointment.controller.js`, check doctor availability before saving a booking)
-
-**Integrator**
-
-- Ensure the frontend Axios instance attaches the JWT to every request:
-
-```javascript
-headers: {
-  Authorization: `Bearer ${token}`;
-}
-```
-
----
-
-## 9. Next Steps
-
-1. **Initialize Git** — one member creates the repo and invites the rest of the team
-2. **Environment Variables** — create a shared `.env` template so everyone uses the same DB structure
-3. **Start Coding** — begin with `server.js` and `db.js` (database connection)
+- [x] **Database:** MongoDB Atlas is connected.
+- [x] **Security:** JWT Authentication is implemented.
+- [x] **Logic:** Double-booking for appointments is prevented.
+- [x] **Pharmacy:** Medicine stock decreases after checkout.
+- [x] **AI:** Keyword/API-based symptom analysis is active.
+- [x] **Cleanup:** `node_modules` and `.env` are removed from Git tracking.
